@@ -20,39 +20,52 @@ function setup() {
 
   context = new AudioContext()
 
-  osc = new OscillatorNode(context)
-  osc.connect(context.destination)
 
 
-  const real = new Float32Array(7);
-  const imag = new Float32Array(7);
+  Hz = 220
+  cycles = 3
+  let pcm = new Float32Array(cycles*context.sampleRate)
+
+  for(let i = 0; i < pcm.length; i++){
+    pcm[i] = Math.sin(Hz * 2 * Math.PI * i * (cycles/pcm.length))
+  }
+
   
-  real[0] = 0;
-  imag[0] = 0;
-  real[1] = 0;
-  imag[1] = 0;
-  real[2] = 0;
-  imag[2] = 0;
-  real[3] = 0;
-  imag[3] = 0;
-  real[4] = 1;
-  imag[4] = 0;
-  real[5] = 0;
-  imag[5] = 0;
-  real[6] = 1;
-  imag[6] = 0;
+
+  const buffer = context.createBuffer(
+    1, 
+    cycles * context.sampleRate, 
+    context.sampleRate
+    )
+
+  buffer.copyToChannel(pcm, 0)
+
+  const bufferNode = context.createBufferSource()
+
+  bufferNode.buffer = buffer
+
+  bufferNode.connect(context.destination)
+
+  bufferNode.start()
+
+  // osc = new OscillatorNode(context)
+  // osc.connect(context.destination)
+
+  // const real = new Float32Array(7);
+  // const imag = new Float32Array(7);
   
-  const sine = context.createPeriodicWave(real, imag);
   
-  osc.setPeriodicWave(sine);
-  osc.frequency.setValueAtTime(220, context.currentTime)
+  // const sine = context.createPeriodicWave(real, imag);
+  
+  // osc.setPeriodicWave(sine);
+  // osc.frequency.setValueAtTime(220, context.currentTime)
   
   
 
   
   // osc.type = "sawtooth"
-  osc.start()
-  osc.stop(2)
+  // osc.start()
+  // osc.stop(2)
 }
 
 function draw() {
