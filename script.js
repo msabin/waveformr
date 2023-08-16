@@ -5,7 +5,7 @@ const NEON_BLUE = [4,217,255]
 
 
 let isClicked = false
-let wave = new Array(WIDTH).fill(HEIGHT/2)
+let screenWave = new Array(WIDTH).fill(HEIGHT/2)
 
 let lastX = HEIGHT/2
 let lastY = HEIGHT/2
@@ -22,16 +22,45 @@ function setup() {
 
   osc = new OscillatorNode(context)
   osc.connect(context.destination)
-  osc.type = "sawtooth"
+
+
+  const real = new Float32Array(7);
+  const imag = new Float32Array(7);
+  
+  real[0] = 0;
+  imag[0] = 0;
+  real[1] = 0;
+  imag[1] = 0;
+  real[2] = 0;
+  imag[2] = 0;
+  real[3] = 0;
+  imag[3] = 0;
+  real[4] = 1;
+  imag[4] = 0;
+  real[5] = 0;
+  imag[5] = 0;
+  real[6] = 1;
+  imag[6] = 0;
+  
+  const sine = context.createPeriodicWave(real, imag);
+  
+  osc.setPeriodicWave(sine);
+  osc.frequency.setValueAtTime(220, context.currentTime)
+  
+  
+
+  
+  // osc.type = "sawtooth"
   osc.start()
+  osc.stop(2)
 }
 
 function draw() {
   
   background(0, 0, 0)
 
-  for(let i = 0; i < wave.length-2; i++){
-    line(i, wave[i], i+1, wave[i+1])
+  for(let i = 0; i < screenWave.length-2; i++){
+    line(i, screenWave[i], i+1, screenWave[i+1])
 
     stroke(NEON_BLUE)
     strokeWeight(2)
@@ -55,7 +84,7 @@ function mouseDragged(){
   for(let i = 0; i < length; i++){
     t = i/length // Interpolate t fraction between points
 
-    wave[lastX + sign*i] = lastY * (1 - t) + mouseY * t
+    screenWave[lastX + sign*i] = lastY * (1 - t) + mouseY * t
   }
 
   lastX = mouseX
