@@ -22,31 +22,58 @@ function setup() {
 
 
 
-  Hz = 220
-  cycles = 3
-  let pcm = new Float32Array(cycles*context.sampleRate)
+  Hz = 440
+  cycles = 1
+  let pcm = new Float32Array(context.sampleRate/Hz)    //(cycles*context.sampleRate)
 
   for(let i = 0; i < pcm.length; i++){
-    pcm[i] = Math.sin(Hz * 2 * Math.PI * i * (cycles/pcm.length))
+    pcm[i] = .5*Math.sin(Hz * 2 * Math.PI * i * (cycles/pcm.length))
   }
+
+  let real = pcm.slice()
+  let imag = new Float32Array(pcm.length)
+
+  transform(real, imag)
 
   
 
-  const buffer = context.createBuffer(
-    1, 
-    cycles * context.sampleRate, 
-    context.sampleRate
-    )
+  let period = context.createPeriodicWave(real, imag)
 
-  buffer.copyToChannel(pcm, 0)
+  let osc = context.createOscillator()
 
-  const bufferNode = context.createBufferSource()
+  osc.setPeriodicWave(period)
 
-  bufferNode.buffer = buffer
+  osc.frequency.setValueAtTime(75, context.currentTime)
 
-  bufferNode.connect(context.destination)
+  osc.connect(context.destination)
 
-  bufferNode.start()
+  osc.start()
+
+
+  // const buffer = context.createBuffer(
+  //   1, 
+  //   cycles * context.sampleRate, 
+  //   context.sampleRate
+  //   )
+
+  // buffer.copyToChannel(pcm, 0)
+
+  // const bufferNode = context.createBufferSource()
+
+  // bufferNode.buffer = buffer
+
+
+  // const analyser = context.createAnalyser()
+  // bufferNode.connect(analyser)
+  
+  // const spectrum = new Float32Array(buffer.length)
+  // analyser.getFloatFrequencyData(spectrum)
+  
+
+
+  // bufferNode.connect(context.destination)
+
+  // bufferNode.start()
 
   // osc = new OscillatorNode(context)
   // osc.connect(context.destination)
