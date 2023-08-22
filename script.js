@@ -22,7 +22,44 @@ let period
 let Hz = 220
 
 
+let midi = null; // global MIDIAccess object
+
+function onMIDISuccess(midiAccess) {
+  console.log("MIDI ready!");
+  midi = midiAccess; // store in the global (in real usage, would probably keep in an object instance)
+  listInputsAndOutputs(midi)
+}
+
+function onMIDIFailure(msg) {
+  console.error(`Failed to get MIDI access - ${msg}`);
+}
+
+function onMIDIMessage(event) {
+  let str = `MIDI message received at timestamp ${event.timeStamp}[${event.data.length} bytes]: `;
+  for (const character of event.data) {
+    str += `0x${character.toString(16)} `;
+  }
+  console.log(str);
+}
+
+function listInputsAndOutputs(midiAccess) {
+  for (const entry of midiAccess.inputs) {
+    const input = entry[1];
+    console.log(
+      `Input port [type:'${input.type}']` +
+        ` id:'${input.id}'` +
+        ` manufacturer:'${input.manufacturer}'` +
+        ` name:'${input.name}'` +
+        ` version:'${input.version}'`,
+    );
+  }
+}
+
+
+
 function setup() {
+
+  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
   createCanvas(WIDTH, HEIGHT)
   background(0, 0, 0)
