@@ -3,6 +3,12 @@ const HEIGHT = 512
 const NEON_PINK = [255, 16, 240]
 const NEON_BLUE = [4,217,255]
 
+const A4 = 440
+
+const MIDI_PRESS = parseInt('90', 16)
+const MIDI_RELEASE = parseInt('80', 16)
+const MIDI_A4 = parseInt('45', 16)
+
 
 let isClicked = false
 
@@ -19,7 +25,7 @@ let context
 let osc
 let period
 
-let Hz = 220
+let Hz = A4/4
 
 
 let midi = null; // global MIDIAccess object
@@ -28,19 +34,13 @@ function onMIDISuccess(midiAccess) {
   console.log("MIDI ready!");
   midi = midiAccess; // store in the global (in real usage, would probably keep in an object instance)
   listInputsAndOutputs(midi)
+  startLoggingMIDIInput(midi)
 }
 
 function onMIDIFailure(msg) {
   console.error(`Failed to get MIDI access - ${msg}`);
 }
 
-function onMIDIMessage(event) {
-  let str = `MIDI message received at timestamp ${event.timeStamp}[${event.data.length} bytes]: `;
-  for (const character of event.data) {
-    str += `0x${character.toString(16)} `;
-  }
-  console.log(str);
-}
 
 function listInputsAndOutputs(midiAccess) {
   for (const entry of midiAccess.inputs) {
@@ -53,6 +53,27 @@ function listInputsAndOutputs(midiAccess) {
         ` version:'${input.version}'`,
     );
   }
+}
+
+function onMIDIMessage(event) {
+  let str = `MIDI message received at timestamp ${event.timeStamp}[${event.data.length} bytes]: `;
+  for (const character of event.data) {
+    str += `0x${character.toString(16)} `;
+  }
+  console.log(str);
+  console.log(event.data[1])
+
+  if(event.data[0] === MIDI_PRESS){
+    distFromA4 = event.data[1]-MIDI_A4
+    Hz = 2**((1/12)*distFromA4) * A4
+    osc.frequency.setValueAtTime(Hz, context.currentTime)
+  }
+}
+
+function startLoggingMIDIInput(midiAccess) {
+  midiAccess.inputs.forEach((entry) => {
+    entry.onmidimessage = onMIDIMessage;
+  });
 }
 
 
