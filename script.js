@@ -17,6 +17,8 @@ let pcm = new Float32Array(screenWave.length)
 let real = pcm.slice()
 let imag = new Float32Array(pcm.length)
 
+let overtones = real.slice(1,real.length/2)
+
 let timeDraw = true
 
 
@@ -109,8 +111,8 @@ function draw() {
     }
   }
   else{
-    for(let i = 0; i < screenWave.length-2; i++){
-      line(i, HEIGHT-Math.abs(real[i]), i+1, HEIGHT-Math.abs(real[i+1]))
+    for(let i = 0; i < (screenWave.length-2)/2; i++){
+      line(2*i, HEIGHT-overtones[i], 2*(i+1), HEIGHT-overtones[i])
 
       stroke(NEON_PINK)
       strokeWeight(2)
@@ -185,7 +187,10 @@ function mouseDragged(){
   transform(real, imag)
   console.log({real}, {imag})
 
+  overtones = real.slice(1, real.length/2)
+  overtones.map((x, i) => Math.sqrt(x**2 + imag[i+1]**2))
+
   // Create a PeriodicWave object with the spectrum.
-  period = context.createPeriodicWave(real.slice(0,real.length/2), imag.slice(0,imag.length/2))
+  period = context.createPeriodicWave(real.slice(1,real.length/2), imag.slice(1,imag.length/2))
   osc.setPeriodicWave(period)
 }
