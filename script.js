@@ -17,6 +17,8 @@ let pcm = new Float32Array(screenWave.length)
 let real = pcm.slice()
 let imag = new Float32Array(pcm.length)
 
+let timeDraw = true
+
 
 let lastX = HEIGHT/2
 let lastY = HEIGHT/2
@@ -98,12 +100,21 @@ function setup() {
 function draw() {
   
   background(0, 0, 0)
+  if(timeDraw){
+    for(let i = 0; i < screenWave.length-2; i++){
+      line(i, screenWave[i], i+1, screenWave[i+1])
 
-  for(let i = 0; i < screenWave.length-2; i++){
-    line(i, screenWave[i], i+1, screenWave[i+1])
+      stroke(NEON_BLUE)
+      strokeWeight(2)
+    }
+  }
+  else{
+    for(let i = 0; i < screenWave.length-2; i++){
+      line(i, HEIGHT-Math.abs(real[i]), i+1, HEIGHT-Math.abs(real[i+1]))
 
-    stroke(NEON_BLUE)
-    strokeWeight(2)
+      stroke(NEON_PINK)
+      strokeWeight(2)
+    }
   }
 }
 
@@ -129,6 +140,10 @@ function keyTyped() {
     pcm.fill(0)
     period = context.createPeriodicWave(pcm, pcm)
     osc.setPeriodicWave(period)
+  }
+  else if (key === 'f') {
+    timeDraw = !timeDraw
+    console.log(timeDraw)
   }
 
 }
@@ -168,8 +183,9 @@ function mouseDragged(){
 
   // Use FFT to fill real and imag with frequency domain.
   transform(real, imag)
+  console.log({real}, {imag})
 
   // Create a PeriodicWave object with the spectrum.
-  period = context.createPeriodicWave(real, imag)
+  period = context.createPeriodicWave(real.slice(0,real.length/2), imag.slice(0,imag.length/2))
   osc.setPeriodicWave(period)
 }
