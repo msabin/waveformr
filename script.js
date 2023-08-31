@@ -18,7 +18,7 @@ let real = pcm.slice()
 let imag = new Float32Array(pcm.length)
 
 let overtones = real.slice(1,real.length/2)
-let screenOvertones = overtones
+let screenOvertones = new Array(WIDTH/2).fill(HEIGHT)
 let maxOvertone
 
 
@@ -116,8 +116,6 @@ function draw() {
   else{
     for(let i = 0; i < screenOvertones.length-1; i++){
       rect(2*i, screenOvertones[i], 2, HEIGHT-screenOvertones[i])
-      console.log(screenOvertones[i], HEIGHT-screenOvertones[i])
-      console.log("hi")
 
       stroke(NEON_PINK)
       strokeWeight(2)
@@ -172,34 +170,75 @@ function mouseDragged(){
     return  // Don't want to divide by zero.
   }
 
-  for(let i = 0; i < length; i++){
-    t = i/length // Interpolate t fraction between points.
+  if(timeDraw){
 
-    screenWave[lastX + sign*i] = lastY * (1 - t) + mouseY * t
+    for(let i = 0; i < length; i++){
+      t = i/length // Interpolate t fraction between points.
 
-    // Normalize the screen's wave to be PCM samples in [-1, 1].
-    pcm[lastX + sign*i] = -(screenWave[lastX + sign*i]-HEIGHT/2)/(HEIGHT/2)
+      screenWave[lastX + sign*i] = lastY * (1 - t) + mouseY * t
+
+      // Normalize the screen's wave to be PCM samples in [-1, 1].
+      pcm[lastX + sign*i] = -(screenWave[lastX + sign*i]-HEIGHT/2)/(HEIGHT/2)
+    }
+
+    lastX = mouseX
+    lastY = mouseY
+
+    // Time domain real and imag.
+    real = pcm.slice()
+    imag = imag.fill(0)
+
+    // Use FFT to fill real and imag with frequency domain.
+    transform(real, imag)
+    console.log({real}, {imag})
+
+    overtones = real.slice(1, real.length/2)
+    overtones = overtones.map((x, i) => Math.sqrt(x**2 + imag[i+1]**2))
+
+    maxOvertone = Math.max(...overtones)
+    screenOvertones = overtones.map((x) => HEIGHT - x/maxOvertone * HEIGHT)
+    
+
+    // Create a PeriodicWave object with the spectrum.
+    period = context.createPeriodicWave(real.slice(1,real.length/2), imag.slice(1,imag.length/2))
+    osc.setPeriodicWave(period)
+  }
+  else {
+
+    
+    
+    for(let i = 0; i < length; i += 2){
+      t = i/length // Interpolate t fraction between points.
+
+      screenOvertones[(lastX + sign*i)/2] = lastY * (1-t) + mouseY * t
+
+      overtones[(lastX + sign*i)/2] = (HEIGHT - screenOvertones[(lastX + sign*i)/2])/HEIGHT
+    }
+
+    lastX = mouseX
+    lastY = mouseY
+
+    // Time domain real and imag.
+    // real = pcm.slice()
+    // imag = imag.fill(0)
+
+    // // Use FFT to fill real and imag with frequency domain.
+    // transform(real, imag)
+    // console.log({real}, {imag})
+
+    // overtones = real.slice(1, real.length/2)
+    // overtones = overtones.map((x, i) => Math.sqrt(x**2 + imag[i+1]**2))
+
+    // maxOvertone = Math.max(...overtones)
+    // screenOvertones = overtones.map((x) => HEIGHT - x/maxOvertone * HEIGHT)
+    
+
+    // Create a PeriodicWave object with the spectrum.
+    period = context.createPeriodicWave(overtones, Array(WIDTH/2 - 1).fill(0))
+    osc.setPeriodicWave(period)
+
+
   }
 
-  lastX = mouseX
-  lastY = mouseY
 
-  // Time domain real and imag.
-  real = pcm.slice()
-  imag = imag.fill(0)
-
-  // Use FFT to fill real and imag with frequency domain.
-  transform(real, imag)
-  console.log({real}, {imag})
-
-  overtones = real.slice(1, real.length/2)
-  overtones = overtones.map((x, i) => Math.sqrt(x**2 + imag[i+1]**2))
-
-  maxOvertone = Math.max(...overtones)
-  screenOvertones = overtones.map((x) => HEIGHT - x/maxOvertone * HEIGHT)
-  
-
-  // Create a PeriodicWave object with the spectrum.
-  period = context.createPeriodicWave(real.slice(1,real.length/2), imag.slice(1,imag.length/2))
-  osc.setPeriodicWave(period)
 }
