@@ -4,9 +4,9 @@ const NEON_PINK = [255, 16, 240];
 const NEON_BLUE = [4, 217, 255];
 
 const A4 = 440;
-const SEMITONE_FACTOR = 2 ** (1/12)
+const SEMITONE_FACTOR = 2 ** (1 / 12);
 
-const RECT_WIDTH = 2;
+const RECT_WIDTH = 8; // Power over 2 to divide WIDTH by
 const NUM_OVERTONES = WIDTH / RECT_WIDTH;
 
 const MIDI_PRESS = parseInt("90", 16);
@@ -20,8 +20,8 @@ let pcm = new Float32Array(screenWave.length);
 let real = pcm.slice();
 let imag = new Float32Array(pcm.length);
 
-let overtones = real.slice(1, real.length / 2);
-let screenOvertones = new Array(WIDTH / 2).fill(HEIGHT);
+let overtones = real.slice(1, real.length / RECT_WIDTH);
+let screenOvertones = new Array(WIDTH / RECT_WIDTH).fill(HEIGHT);
 let maxOvertone;
 
 let timeDraw = true;
@@ -187,23 +187,24 @@ function mouseDragged() {
     transform(real, imag);
     console.log({ real }, { imag });
 
-    overtones = real.slice(1, real.length / 2);
+    // Create a PeriodicWave object with the spectrum.
+    period = context.createPeriodicWave(
+      real.slice(1, real.length / 2), // Divide by 2 to get up to Nyquist freq.
+      imag.slice(1, imag.length / 2)
+    );
+    osc.setPeriodicWave(period);
+
+    // Sync up the overtone view.
+    overtones = real.slice(1, real.length / RECT_WIDTH);
     overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imag[i + 1] ** 2));
 
     maxOvertone = Math.max(...overtones);
     screenOvertones = overtones.map((x) => HEIGHT - (x / maxOvertone) * HEIGHT);
-
-    // Create a PeriodicWave object with the spectrum.
-    period = context.createPeriodicWave(
-      real.slice(1, real.length / 2),
-      imag.slice(1, imag.length / 2)
-    );
-    osc.setPeriodicWave(period);
   } else {
-    for (let i = 0; i < length; i += 2) {
+    for (let i = 0; i < length; i += RECT_WIDTH) {
       t = i / length; // Interpolate t fraction between points.
 
-      index = Math.floor((lastX + sign * i) / 2);
+      index = Math.floor((lastX + sign * i) / RECT_WIDTH);
       console.log(index);
       screenOvertones[index] = lastY * (1 - t) + newY * t;
 
@@ -213,8 +214,8 @@ function mouseDragged() {
 
     // Create a PeriodicWave object with the spectrum.
     period = context.createPeriodicWave(
-      overtones,
-      Array(WIDTH / 2 - 1).fill(0)
+      [0, ...overtones],
+      Array(WIDTH / RECT_WIDTH).fill(0)
     );
     osc.setPeriodicWave(period);
   }
