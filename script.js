@@ -158,7 +158,10 @@ function mouseDragged(){
 
   context.resume() // Keep the sound playing
 
-  offsetX = mouseX - lastX
+  newX = Math.max(Math.min(mouseX, WIDTH), 0)
+  newY = Math.max(Math.min(mouseY, HEIGHT), 0)
+
+  offsetX = newX - lastX
 
 
   // Fill sound wave array by interpolating between current mouse 
@@ -175,14 +178,11 @@ function mouseDragged(){
     for(let i = 0; i < length; i++){
       t = i/length // Interpolate t fraction between points.
 
-      screenWave[lastX + sign*i] = lastY * (1 - t) + mouseY * t
+      screenWave[lastX + sign*i] = lastY * (1 - t) + newY * t
 
       // Normalize the screen's wave to be PCM samples in [-1, 1].
       pcm[lastX + sign*i] = -(screenWave[lastX + sign*i]-HEIGHT/2)/(HEIGHT/2)
     }
-
-    lastX = mouseX
-    lastY = mouseY
 
     // Time domain real and imag.
     real = pcm.slice()
@@ -210,35 +210,20 @@ function mouseDragged(){
     for(let i = 0; i < length; i += 2){
       t = i/length // Interpolate t fraction between points.
 
-      screenOvertones[(lastX + sign*i)/2] = lastY * (1-t) + mouseY * t
+      index = Math.floor((lastX + sign*i)/2)
+      console.log(index)
+      screenOvertones[index] = lastY * (1-t) + newY * t
 
-      overtones[(lastX + sign*i)/2] = (HEIGHT - screenOvertones[(lastX + sign*i)/2])/HEIGHT
+      overtones[index] = (HEIGHT - screenOvertones[index])/HEIGHT
+      print(overtones)
     }
-
-    lastX = mouseX
-    lastY = mouseY
-
-    // Time domain real and imag.
-    // real = pcm.slice()
-    // imag = imag.fill(0)
-
-    // // Use FFT to fill real and imag with frequency domain.
-    // transform(real, imag)
-    // console.log({real}, {imag})
-
-    // overtones = real.slice(1, real.length/2)
-    // overtones = overtones.map((x, i) => Math.sqrt(x**2 + imag[i+1]**2))
-
-    // maxOvertone = Math.max(...overtones)
-    // screenOvertones = overtones.map((x) => HEIGHT - x/maxOvertone * HEIGHT)
-    
 
     // Create a PeriodicWave object with the spectrum.
     period = context.createPeriodicWave(overtones, Array(WIDTH/2 - 1).fill(0))
     osc.setPeriodicWave(period)
-
-
   }
 
+  lastX = newX
+  lastY = newY
 
 }
