@@ -108,6 +108,9 @@ function draw() {
       strokeWeight(2);
     }
   } else {
+    stroke(NEON_PINK);
+    strokeWeight(1);
+    fill((0,0,0));
     for (let i = 0; i < screenOvertones.length; i++) {
       rect(
         RECT_WIDTH * i,
@@ -115,9 +118,6 @@ function draw() {
         RECT_WIDTH,
         HEIGHT - screenOvertones[i]
       );
-
-      stroke(NEON_PINK);
-      strokeWeight(2);
     }
   }
 }
@@ -218,6 +218,17 @@ function mouseDragged() {
       Array(WIDTH / RECT_WIDTH).fill(0)
     );
     osc.setPeriodicWave(period);
+
+    real.fill(0);
+    imag.fill(0);
+    for(let i = 0; i < overtones.length; i++){
+      real[i+1] = overtones[i]
+    }
+
+    // Sync up the waveform view.
+    inverseTransform(real, imag);
+
+    screenWave = real.map((x) => x * (-HEIGHT/2) + HEIGHT/2);
   }
 
   lastX = newX;
