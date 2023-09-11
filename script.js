@@ -110,7 +110,7 @@ function draw() {
   } else {
     stroke(NEON_PINK);
     strokeWeight(1);
-    fill((0,0,0));
+    fill((0, 0, 0));
     for (let i = 0; i < screenOvertones.length; i++) {
       rect(
         RECT_WIDTH * i,
@@ -182,6 +182,7 @@ function mouseDragged() {
     // Time domain real and imag.
     real = pcm.slice();
     imag = imag.fill(0);
+    console.log(imag.fill(0))
 
     // Use FFT to fill real and imag with frequency domain.
     transform(real, imag);
@@ -205,11 +206,10 @@ function mouseDragged() {
       t = i / length; // Interpolate t fraction between points.
 
       index = Math.floor((lastX + sign * i) / RECT_WIDTH);
-      console.log(index);
+
       screenOvertones[index] = lastY * (1 - t) + newY * t;
 
       overtones[index] = (HEIGHT - screenOvertones[index]) / HEIGHT;
-      print(overtones);
     }
 
     // Create a PeriodicWave object with the spectrum.
@@ -218,17 +218,23 @@ function mouseDragged() {
       Array(WIDTH / RECT_WIDTH).fill(0)
     );
     osc.setPeriodicWave(period);
-
-    real.fill(0);
-    imag.fill(0);
-    for(let i = 0; i < overtones.length; i++){
-      real[i+1] = overtones[i]
+    
+    debugger;
+    real = real.fill(0);
+    console.log({ real });
+    imag = imag.fill(0);
+    console.log({overtones})
+    for (let i = 0; i < overtones.length; i++) {
+      real[i + 1] = overtones[i];
+      console.log(real[i+1], overtones[i])
+      real[real.length - 1 - i] = overtones[overtones.length - 1 - i];
     }
+    console.log({ real });
 
     // Sync up the waveform view.
     inverseTransform(real, imag);
 
-    screenWave = real.map((x) => x * (-HEIGHT/2) + HEIGHT/2);
+    screenWave = real.map((x) => x * (-HEIGHT / 2) + HEIGHT / 2);
   }
 
   lastX = newX;
