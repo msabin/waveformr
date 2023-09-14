@@ -18,9 +18,9 @@ let isClicked = false;
 let screenWave = new Array(WIDTH).fill(HEIGHT / 2);
 let pcm = new Float32Array(screenWave.length);
 let real = pcm.slice();
-let imag = new Float32Array(pcm.length);
+let imag = pcm.slice();
 
-let overtones = real.slice(1, real.length / RECT_WIDTH);
+let overtones = real.slice(1, WIDTH / RECT_WIDTH);
 let screenOvertones = new Array(WIDTH / RECT_WIDTH).fill(HEIGHT);
 let maxOvertone;
 
@@ -109,7 +109,7 @@ function draw() {
     }
   } else {
     stroke(NEON_PINK);
-    strokeWeight(1);
+    strokeWeight(2);
     fill((0, 0, 0));
     for (let i = 0; i < screenOvertones.length; i++) {
       rect(
@@ -181,8 +181,8 @@ function mouseDragged() {
 
     // Time domain real and imag.
     real = pcm.slice();
-    imag = imag.fill(0);
-    console.log(imag.fill(0))
+    imag.fill(0);
+    console.log({imag})
 
     // Use FFT to fill real and imag with frequency domain.
     transform(real, imag);
@@ -200,7 +200,7 @@ function mouseDragged() {
     overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imag[i + 1] ** 2));
 
     maxOvertone = Math.max(...overtones);
-    screenOvertones = overtones.map((x) => HEIGHT - (x / maxOvertone) * HEIGHT);
+    screenOvertones = overtones.map((x) => HEIGHT - (x / (3/2 * maxOvertone)) * HEIGHT);
   } else {
     for (let i = 0; i < length; i += RECT_WIDTH) {
       t = i / length; // Interpolate t fraction between points.
@@ -219,22 +219,26 @@ function mouseDragged() {
     );
     osc.setPeriodicWave(period);
     
-    debugger;
-    real = real.fill(0);
-    console.log({ real });
-    imag = imag.fill(0);
+
+    real.fill(0);
+    console.log( real , "should be clear", real[0], real[1], real["0"]);
+    imag.fill(0);
     console.log({overtones})
     for (let i = 0; i < overtones.length; i++) {
-      real[i + 1] = overtones[i];
-      console.log(real[i+1], overtones[i])
-      real[real.length - 1 - i] = overtones[overtones.length - 1 - i];
+      imag[i + 1] = overtones[i];
+      console.log(imag[i+1], overtones[i], {i})
+      // imag[(imag.length - 1) - i] = -overtones[i];
     }
-    console.log({ real });
+    console.log(JSON.stringify(real));
+    console.log(JSON.stringify(imag));
 
     // Sync up the waveform view.
     inverseTransform(real, imag);
 
-    screenWave = real.map((x) => x * (-HEIGHT / 2) + HEIGHT / 2);
+    let maxHeight = Math.max(...real);
+    screenWave = real.map((x) => (x/(3/2*maxHeight)) * (-HEIGHT / 2) + HEIGHT / 2);
+
+    
   }
 
   lastX = newX;
