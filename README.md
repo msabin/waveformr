@@ -1,6 +1,6 @@
 # waveformr
 
-<img src="/screencaps/drawing-demo.gif" width="350">
+<img src="/screencaps/drawing-demo1.gif" width="350">
 
 waveformr is an **in progress** project for visually sculpting your own fundamental waveform!  
 
@@ -12,8 +12,7 @@ A React-built GUI wrapper for interacting with waveformr with extended functiona
 
 
 
-<img src="/screencaps/time-demo.gif" width="200">
-<img src="/screencaps/freq-demo.gif" width="200">
+<img src="/screencaps/drawing-demo2.gif" width="350">
 
 
 
