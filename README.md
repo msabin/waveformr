@@ -12,7 +12,7 @@ A React-built GUI wrapper for interacting with waveformr with extended functiona
 
 
 
-<img src="/screencaps/drawing-demo2.gif" width="350">
+<!-- <img src="/screencaps/drawing-demo2.gif" width="350"> -->
 
 
 
