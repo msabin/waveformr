@@ -1,6 +1,6 @@
 # waveformr
 
-<img src="/screencaps/rhythmonics-bpm.gif" width="640">
+<img src="/screencaps/drawing-demo.gif" width="640">
 
 waveformr is an **in progress** project for visually sculpting your own fundamental waveform!  
 
