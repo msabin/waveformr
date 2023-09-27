@@ -1,6 +1,6 @@
 # waveformr
 
-<img src="/screencaps/drawing-demo.gif" width="640">
+<img src="/screencaps/drawing-demo.gif" width="350">
 
 waveformr is an **in progress** project for visually sculpting your own fundamental waveform!  
 
@@ -11,12 +11,10 @@ This project uses the [p5.js](https://p5js.org/) library for interacting with an
 A React-built GUI wrapper for interacting with waveformr with extended functionality is under construction and coming soon!
 
 
-<p>
-<img src="/screencaps/rhythmonics-blur.png" width="350">
-<img src="/screencaps/rhythmonics-quartet.png" width="350">
-<img src="/screencaps/rhythmonics-all.png" width="350">
-<img src="/screencaps/rhythmonics-harmony.png" width="350">
-</p>
+
+<img src="/screencaps/time-demo.gif" width="200">
+<img src="/screencaps/freq-demo.gif" width="200">
+
 
 
 
