@@ -30,7 +30,7 @@ Feel free to use your own local build environment if wanted, but a simple way to
 
 `python3 -m http.server`
 
-Put the link of the port that this Python module opened (e.g. `http://localhost:8000/`) and play with waveformr!
+Put the link of the port that the Python module opened (e.g. `http://localhost:8000/`) in your browser and play with waveformr!
 
 
 ## Usage
