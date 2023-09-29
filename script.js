@@ -85,7 +85,7 @@ function startLoggingMIDIInput(midiAccess) {
 function setup() {
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
-  createCanvas(WIDTH, HEIGHT);
+  createCanvas(WIDTH, HEIGHT, document.getElementById('screen'));
   background(0, 0, 0);
 
   context = new AudioContext();

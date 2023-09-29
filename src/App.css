@@ -5,3 +5,13 @@
   text-align: center;
 }
 
+#console {
+  background-color: rgb(63, 63, 63);
+  border-radius: 2rem;
+  padding: 4rem;
+  display: flex;
+}
+
+button {
+  margin: 1rem
+}
