@@ -6,12 +6,37 @@
 }
 
 #console {
-  background-color: rgb(63, 63, 63);
+  background-color: rgb(95 95 95);
   border-radius: 2rem;
   padding: 4rem;
   display: flex;
 }
 
 button {
-  margin: 1rem
+  margin: 1rem;
+  border-radius: 0.5rem;
+  border-width: 0.25rem;
+  border-style: outset;
+  border-color: hsl(179.08deg 100% 37.25%);
+}
+
+.toggle {
+  border-width: 0;
+  position: absolute;
+  cursor: pointer;
+  background-color: #f82525;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.toggle::before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: black;
+  -webkit-transition: .4s;
+  transition: .4s;
 }

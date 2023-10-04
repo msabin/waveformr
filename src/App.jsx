@@ -25,6 +25,16 @@ function RadioBtn( { timeDomain } ) {
   );
 }
 
+
+function Toggle() {
+  return (
+    <button class="toggle" type="button" aria-pressed="true"> 
+
+    </button>
+  )
+}
+
+
 function Console() {
   return (
     <div id="console">
@@ -32,6 +42,7 @@ function Console() {
       <div>
         <RadioBtn timeDomain={true}></RadioBtn>
         <RadioBtn timeDomain={false}></RadioBtn>
+        <Toggle></Toggle>
       </div>
     </div>
   );
