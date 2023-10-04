@@ -16,11 +16,12 @@ const MIDI_A4 = parseInt("45", 16);
 let isClicked = false;
 
 let screenWave = new Array(WIDTH).fill(HEIGHT / 2);
+let pitchWave = screenWave.slice();
 let pcm = new Float32Array(screenWave.length);
 let real = pcm.slice();
 let imag = pcm.slice();
 
-let overtones = real.slice(1, WIDTH / RECT_WIDTH);
+let overtones = new Float32Array(WIDTH / RECT_WIDTH);
 let screenOvertones = new Array(WIDTH / RECT_WIDTH).fill(HEIGHT);
 let maxOvertone;
 
@@ -34,6 +35,7 @@ let osc;
 let period;
 
 let Hz = A4 / 4;
+let baseHz = Hz;
 
 let midi = null; // global MIDIAccess object
 
@@ -146,10 +148,15 @@ function draw() {
   background(0, 0, 0);
   if (timeDraw) {
     for (let i = 0; i < screenWave.length - 1; i++) {
-      line(i, screenWave[i], i + 1, screenWave[i + 1]);
+      // stroke(NEON_PINK);
+      // strokeWeight(1);
+
+      // line(i, pitchWave[i], i+1, pitchWave[i+1]);
 
       stroke(NEON_BLUE);
       strokeWeight(2);
+
+      line(i, screenWave[i], i + 1, screenWave[i + 1]);
     }
   } else {
     stroke(NEON_PINK);
@@ -240,7 +247,7 @@ function mouseDragged() {
     osc.setPeriodicWave(period);
 
     // Sync up the overtone view.
-    overtones = real.slice(1, real.length / RECT_WIDTH);
+    overtones = real.slice(1, real.length / RECT_WIDTH + 1);
     overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imag[i + 1] ** 2));
 
     maxOvertone = Math.max(...overtones);
@@ -261,7 +268,7 @@ function mouseDragged() {
     // Create a PeriodicWave object with the spectrum.
     period = context.createPeriodicWave(
       [0, ...overtones],
-      Array(WIDTH / RECT_WIDTH).fill(0)
+      Array(WIDTH / RECT_WIDTH + 1).fill(0)
     );
     osc.setPeriodicWave(period);
 
@@ -277,6 +284,16 @@ function mouseDragged() {
     console.log(JSON.stringify(real));
     console.log(JSON.stringify(imag));
 
+
+    let imagPitch = new Float32Array(imag.length);
+    let scale = Hz/baseHz;
+    for  (let i = 0; i < imag.length; i++){
+      let index = Math.floor(scale * i);
+      if (index < imag.length){
+        imagPitch[index] = imag[i];
+      }
+    }
+
     // Sync up the waveform view.
     inverseTransform(real, imag);
 
@@ -284,6 +301,14 @@ function mouseDragged() {
     screenWave = real.map(
       (x) => (x / ((3 / 2) * maxHeight)) * (-HEIGHT / 2) + HEIGHT / 2
     );
+
+    real.fill(0)
+    inverseTransform(real, imagPitch)
+
+    pitchWave = real.map(
+      (x) => (x / (6 * maxHeight)) * (-HEIGHT / 2) + HEIGHT / 2
+    );
+
   }
 
   lastX = newX;
