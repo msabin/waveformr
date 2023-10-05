@@ -140,6 +140,7 @@ function setup() {
   osc.connect(context.destination);
 
   osc.frequency.setValueAtTime(waveform.Hz, context.currentTime);
+  osc.setPeriodicWave(context.createPeriodicWave([0,0], [0,0]))
 
   osc.start();
 }

@@ -16,27 +16,42 @@ button {
   margin: 1rem;
   border-radius: 0.5rem;
   border-width: 0.25rem;
-  border-style: outset;
+  border-style: none;
   border-color: hsl(179.08deg 100% 37.25%);
 }
 
+
+img {
+  background-color: #004f4b;
+  border-radius: .25rem;
+  padding: .2rem;
+}
+
+
 .toggle {
-  border-width: 0;
-  position: absolute;
-  cursor: pointer;
-  background-color: #f82525;
-  -webkit-transition: .4s;
-  transition: .4s;
+  border-radius: 2rem;
+  padding: 40px 25px;
+  background-color: #414141;
+  /* background-color: #b3b3b3; */
+  position: relative;
+  box-shadow: inset 1px 1px 5px 0 black;
 }
 
 .toggle::before {
-  position: absolute;
+  background-color: hsl(179.08deg 100% 40.55%);
+  padding: 30px 20px;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: black;
+  border-radius: 1.5rem;
+  position: absolute;
+  left: 5px;
+  top: 5px;
   -webkit-transition: .4s;
   transition: .4s;
+  box-shadow: inset -1px -2px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%);
+}
+
+.toggle[aria-pressed="false"]::before {
+  -webkit-transform: translateY(9px);
+  -ms-transform: translateY(9px);
+  transform: translateY(9px);
 }
