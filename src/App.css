@@ -6,10 +6,17 @@
 }
 
 #console {
-  background-color: rgb(95 95 95);
+  background-color: rgb(117 117 117);
   border-radius: 2rem;
   padding: 4rem;
   display: flex;
+  box-shadow: inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), -4px -3px 20px 0 rgb(127 235 255), 3px 2px 20px 0 rgb(255 127 249);
+}
+
+#screen {
+  border-style: inset;
+  border-width: 8px;
+  border-color: #9a9999;
 }
 
 button {
@@ -18,6 +25,34 @@ button {
   border-width: 0.25rem;
   border-style: none;
   border-color: hsl(179.08deg 100% 37.25%);
+}
+
+
+.up-arrow {
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0rem;
+  border-top: none;
+  border-bottom: 33px solid hsl(179.08deg 100% 40.55%);
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  /* box-shadow: inset -1px -3px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%); */
+}
+
+.down-arrow {
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0rem;
+  border-top: none;
+  border-top: 33px solid hsl(179.08deg 100% 40.55%);
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  /* box-shadow: inset -1px -3px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%); */
+}
+
+
+#hz-display {
+  background-color: #004f4b;
 }
 
 

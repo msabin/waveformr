@@ -47,9 +47,31 @@ function Toggle() {
   );
 }
 
+
+function HzDisplay () {
+
+
+  return (
+    <div>
+      <button class="up-arrow"></button>
+
+      <p id="hz-display"> 440 </p>
+
+      <button class="down-arrow"></button>
+    </div>
+  )
+
+}
+
+
+
+
+
+
 function Console() {
   return (
     <div id="console">
+      <HzDisplay></HzDisplay>
       <div>
         <Screen />
         <div>
