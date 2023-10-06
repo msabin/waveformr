@@ -52,12 +52,14 @@ button {
 
 
 #hz-display {
-  background-color: #004f4b;
+  font-family: 'Digital Numbers', sans-serif;
+  background-color: hsl(177deg, 98%, 10%);
+  color: hsl(177deg, 98%, 60%);
 }
 
 
 img {
-  background-color: #004f4b;
+  background-color: hsl(177deg, 98%, 10%);
   border-radius: .25rem;
   padding: .2rem;
 }
