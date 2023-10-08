@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./App.css";
 import sineSVG from "./assets/sine.svg";
 import histSVG from "./assets/histogram.svg";
+import squareSVG from "./assets/square.svg"
+import sawtoothSVG from "./assets/sawtooth.svg"
 import { Screen } from "./components/Screen";
 
 function RadioBtn({ timeDomain }) {
@@ -14,7 +16,7 @@ function RadioBtn({ timeDomain }) {
 
   return (
     <button onClick={handleClick}>
-      <img src={timeDomain ? sineSVG : histSVG} />
+      <img src={timeDomain ? squareSVG : sawtoothSVG} />
     </button>
   );
 }
@@ -30,7 +32,7 @@ function Toggle() {
   return (
     <>
       <div>
-        <img src={sineSVG} />
+        <img className="digital-display" src={sineSVG} />
       </div>
 
       <button
@@ -41,7 +43,7 @@ function Toggle() {
       ></button>
 
       <div>
-        <img src={histSVG} />
+        <img className="digital-display" src={histSVG} />
       </div>
     </>
   );
@@ -50,14 +52,27 @@ function Toggle() {
 
 function HzDisplay () {
 
+  const [newHz, setNewHz] = useState(Hz);
+
+  function handleUpClick() {
+    Hz *= 2 ** (1 / 12);
+    osc.frequency.setValueAtTime(Hz, context.currentTime);
+    setNewHz(Hz.toFixed(2));
+  }
+
+  function handleDownClick() {
+    Hz /= 2 ** (1 / 12);
+    osc.frequency.setValueAtTime(Hz, context.currentTime);
+    setNewHz(Hz.toFixed(2));
+  }
 
   return (
     <div>
-      <button class="up-arrow"></button>
+      <button className="up-arrow" onClick={handleUpClick}></button>
 
-      <p id="hz-display"> 440 </p>
+      <p className="digital-display"> {newHz} </p>
 
-      <button class="down-arrow"></button>
+      <button className="down-arrow" onClick={handleDownClick}></button>
     </div>
   )
 
