@@ -145,34 +145,34 @@ function startLoggingMIDIInput(midiAccess) {
 //   osc.start();
 // }
 
-function draw() {
-  background(0, 0, 0);
-  if (timeDraw) {
-    for (let i = 0; i < screenWave.length - 1; i++) {
-      // stroke(NEON_PINK);
-      // strokeWeight(1);
+// function draw() {
+//   background(0, 0, 0);
+//   if (timeDraw) {
+//     for (let i = 0; i < screenWave.length - 1; i++) {
+//       // stroke(NEON_PINK);
+//       // strokeWeight(1);
 
-      // line(i, pitchWave[i], i+1, pitchWave[i+1]);
+//       // line(i, pitchWave[i], i+1, pitchWave[i+1]);
 
-      stroke(NEON_BLUE);
-      strokeWeight(2);
+//       stroke(NEON_BLUE);
+//       strokeWeight(2);
 
-      line(i, screenWave[i], i + 1, screenWave[i + 1]);
-    }
-  } else {
-    stroke(NEON_PINK);
-    strokeWeight(2);
-    fill((0, 0, 0));
-    for (let i = 0; i < screenOvertones.length; i++) {
-      rect(
-        RECT_WIDTH * i,
-        screenOvertones[i],
-        RECT_WIDTH,
-        HEIGHT - screenOvertones[i]
-      );
-    }
-  }
-}
+//       line(i, screenWave[i], i + 1, screenWave[i + 1]);
+//     }
+//   } else {
+//     stroke(NEON_PINK);
+//     strokeWeight(2);
+//     fill((0, 0, 0));
+//     for (let i = 0; i < screenOvertones.length; i++) {
+//       rect(
+//         RECT_WIDTH * i,
+//         screenOvertones[i],
+//         RECT_WIDTH,
+//         HEIGHT - screenOvertones[i]
+//       );
+//     }
+//   }
+// }
 
 function keyPressed() {
   // Shift pitch by semitone with the arrows

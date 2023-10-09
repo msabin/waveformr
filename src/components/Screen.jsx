@@ -27,6 +27,7 @@ export function Screen( {waveForm} ) {
     const myP5 = new p5(sketch);
   }, []); // The empty array means this effect runs once after the component mounts
 
+  console.log(p5)
   return <canvas id="screen" ref={canvasRef} />;
 
 }
