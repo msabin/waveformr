@@ -126,24 +126,24 @@ function startLoggingMIDIInput(midiAccess) {
   });
 }
 
-function setup() {
-  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+// function setup() {
+//   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
-  createCanvas(WIDTH, HEIGHT, document.getElementById("screen"));
-  background(0, 0, 0);
+//   createCanvas(WIDTH, HEIGHT, document.getElementById("screen"));
+//   background(0, 0, 0);
 
-  let waveform = new WaveForm(Hz, WIDTH);
+//   let waveform = new WaveForm(Hz, WIDTH);
 
-  context = new AudioContext();
+//   context = new AudioContext();
 
-  osc = context.createOscillator();
-  osc.connect(context.destination);
+//   osc = context.createOscillator();
+//   osc.connect(context.destination);
 
-  osc.frequency.setValueAtTime(waveform.Hz, context.currentTime);
-  osc.setPeriodicWave(context.createPeriodicWave([0,0], [0,0]))
+//   osc.frequency.setValueAtTime(waveform.Hz, context.currentTime);
+//   osc.setPeriodicWave(context.createPeriodicWave([0,0], [0,0]))
 
-  osc.start();
-}
+//   osc.start();
+// }
 
 function draw() {
   background(0, 0, 0);

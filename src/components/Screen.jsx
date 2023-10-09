@@ -1,15 +1,36 @@
-// pass in waveform prop
-// import p5
+import React, { useEffect, useRef } from 'react';
+import p5 from "p5";
 
-function setup () {
-  createCanvas(WIDTH, HEIGHT, document.getElementById("screen"));
-  background(0, 0, 0);  
-}
 
 
 export function Screen( {waveForm} ) {
-  return <canvas id="screen"></canvas>;
+  const canvasRef = useRef();
+
+  
+
+  // p5.js sketch function
+  function sketch(p) {
+
+    p.setup = () => {
+      p.createCanvas(512, 512, canvasRef.current);
+    };
+
+    p.draw = () => {
+      p.background(0);
+      p.ellipse(56, 46, 55, 55);
+      // Your p5.js drawing code here
+    };
+  };
+
+  useEffect(() => {
+    // Create a new p5.js instance with the sketch function
+    const myP5 = new p5(sketch);
+  }, []); // The empty array means this effect runs once after the component mounts
+
+  return <canvas id="screen" ref={canvasRef} />;
+
 }
+
 
 
 

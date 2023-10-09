@@ -1,5 +1,5 @@
 {
-  "name": "temp",
+  "name": "waveformr",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "p5": "^1.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

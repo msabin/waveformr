@@ -36,7 +36,7 @@ function Toggle() {
       </div>
 
       <button
-        class="toggle"
+        className="toggle"
         type="button"
         aria-pressed={isPressed}
         onClick={handleClick}
