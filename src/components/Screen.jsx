@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import p5 from "p5";
 
 
@@ -6,7 +6,7 @@ import p5 from "p5";
 export function Screen( {width, height, wave, displayPCM} ) {
   const canvasRef = useRef();
 
-  
+  const [screenWave, setScreenWave] = useState();
 
   // p5.js sketch function
   function sketch(p) {

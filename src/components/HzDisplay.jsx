@@ -1,4 +1,6 @@
-export function HzDisplay () {
+import { useState } from "react";
+
+export function HzDisplay ( { Hz } ) {
 
   const [newHz, setNewHz] = useState(Hz);
 

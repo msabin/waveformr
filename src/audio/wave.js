@@ -7,7 +7,7 @@ function waveForm(pcm) {
   const imagFreq = pcm.slice().fill(0);
 
   // Use FFT to fill real and imag with frequency domain.
-  fft.transform(realFreq, imagFreq);
+  // fft.transform(realFreq, imagFreq);
 
 
   return { pcm, realFreq, imagFreq }

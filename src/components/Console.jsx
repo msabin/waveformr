@@ -16,7 +16,7 @@ export function Console() {
 
   const [displayPCM, setDisplayPCM] = useState(true);
 
-  
+  const [Hz, setHz] = useState(110);
 
 
   function handleChange(){
@@ -42,7 +42,7 @@ export function Console() {
 
   return (
     <div id="console">
-      <HzDisplay></HzDisplay>
+      <HzDisplay Hz={Hz} ></HzDisplay>
       <div>
         <Screen 
           width={screenWidth} 
