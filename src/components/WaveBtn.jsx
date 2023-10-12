@@ -1,8 +1,8 @@
-import squareSVG from "./assets/square.svg"
-import sawtoothSVG from "./assets/sawtooth.svg"
+import squareSVG from "../assets/square.svg"
+import sawtoothSVG from "../assets/sawtooth.svg"
 
 
-function RadioBtn({ timeDomain }) {
+export function WaveBtn({ timeDomain }) {
   // const [displayTime, setDisplayTime] = useState(true);
 
   function handleClick() {

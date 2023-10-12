@@ -1,13 +1,7 @@
-import sineSVG from "./assets/sine.svg";
-import histSVG from "./assets/histogram.svg";
+import sineSVG from "../assets/sine.svg";
+import histSVG from "../assets/histogram.svg";
 
-function Toggle() {
-  const [isPressed, setIsPressed] = useState(timeDraw);
-
-  function handleClick() {
-    timeDraw = !isPressed;
-    setIsPressed(timeDraw);
-  }
+export function Toggle( { isPressed, onToggle } ) {
 
   return (
     <>
@@ -19,7 +13,7 @@ function Toggle() {
         className="toggle"
         type="button"
         aria-pressed={isPressed}
-        onClick={handleClick}
+        onClick={onToggle}
       ></button>
 
       <div>

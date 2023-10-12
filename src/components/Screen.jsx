@@ -3,7 +3,7 @@ import p5 from "p5";
 
 
 
-export function Screen( {pcm, handleChange} ) {
+export function Screen( {width, height, wave, displayPCM} ) {
   const canvasRef = useRef();
 
   
@@ -12,14 +12,33 @@ export function Screen( {pcm, handleChange} ) {
   function sketch(p) {
 
     p.setup = () => {
-      p.createCanvas(512, 512, canvasRef.current);
+      p.createCanvas(width, height, canvasRef.current);
     };
 
     p.draw = () => {
       p.background(0);
-      p.ellipse(56, 46, 55, 55);
-      // Your p5.js drawing code here
-      // Use pcm and overtones
+      
+      if (displayPCM) {
+        for (let i = 0; i < screenWave.length - 1; i++) {
+          p.stroke(NEON_BLUE);
+          p.strokeWeight(2);
+    
+          p.line(i, screenWave[i], i + 1, screenWave[i + 1]);
+        }
+      }
+      else {
+        p.stroke(NEON_PINK);
+        p.strokeWeight(2);
+
+        for (let i = 0; i < screenOvertones.length; i++) {
+          p.rect(
+            RECT_WIDTH * i,
+            screenOvertones[i],
+            RECT_WIDTH,
+            HEIGHT - screenOvertones[i]
+          );
+        }
+      }
     };
 
     //p.mouseDragged = () => {
@@ -32,7 +51,6 @@ export function Screen( {pcm, handleChange} ) {
     new p5(sketch);
   }, []); // The empty array means this effect runs once after the component mounts
 
-  console.log(p5)
   return <canvas id="screen" ref={canvasRef} />;
 
 }

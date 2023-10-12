@@ -192,3 +192,5 @@ function newArrayOfZeros(n) {
         result.push(0);
     return result;
 }
+
+export * from "./fft";

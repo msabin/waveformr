@@ -70,7 +70,7 @@ button {
 
 .toggle {
   border-radius: 2rem;
-  padding: 40px 25px;
+  padding: 50px 25px;
   background-color: #414141;
   /* background-color: #b3b3b3; */
   position: relative;
@@ -91,7 +91,7 @@ button {
 }
 
 .toggle[aria-pressed="false"]::before {
-  -webkit-transform: translateY(9px);
-  -ms-transform: translateY(9px);
-  transform: translateY(9px);
+  -webkit-transform: translateY(29px);
+  -ms-transform: translateY(29px);
+  transform: translateY(29px);
 }

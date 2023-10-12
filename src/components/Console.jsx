@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useWave } from "../audio/wave";
 import { HzDisplay } from "./HzDisplay";
 import { Screen } from "./Screen";
 import { WaveBtn } from "./WaveBtn";
@@ -7,13 +8,24 @@ import { Toggle } from "./Toggle";
 
 
 export function Console() {
-  // Have our state set up here I think
+  const screenWidth = 512;
+  const screenHeight = 512;
 
-  //Class instance
-  const wave = useWave();
+
+  const wave = useWave(new Float32Array(screenWidth).fill(0));
+
+  const [displayPCM, setDisplayPCM] = useState(true);
+
+  
+
 
   function handleChange(){
     wave.setPCM(pcm);
+  }
+
+
+  function handleToggle() {
+    setDisplayPCM(!displayPCM);
   }
 
 
@@ -32,7 +44,12 @@ export function Console() {
     <div id="console">
       <HzDisplay></HzDisplay>
       <div>
-        <Screen />
+        <Screen 
+          width={screenWidth} 
+          height={screenHeight} 
+          wave={wave}
+          displayPCM={displayPCM}
+        />
         <div>
           <WaveBtn shape="sine"></WaveBtn>
           <WaveBtn shape="square"></WaveBtn>
@@ -41,7 +58,7 @@ export function Console() {
         </div>
       </div>
       <div>
-        <Toggle></Toggle>
+        <Toggle isPressed={displayPCM} onToggle={handleToggle} ></Toggle>
       </div>
     </div>
   );

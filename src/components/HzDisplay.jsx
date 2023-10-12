@@ -1,4 +1,4 @@
-function HzDisplay () {
+export function HzDisplay () {
 
   const [newHz, setNewHz] = useState(Hz);
 
