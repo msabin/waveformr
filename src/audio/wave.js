@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as fft from "./fft";
+import {transform} from "./fft.js";
 
 function wave(pcm) {
 
@@ -7,7 +7,7 @@ function wave(pcm) {
   const imagFreq = pcm.slice().fill(0);
 
   // Use FFT to fill real and imag with frequency domain.
-  // fft.transform(realFreq, imagFreq);
+  transform(realFreq, imagFreq);
 
 
   return { pcm, realFreq, imagFreq }

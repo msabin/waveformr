@@ -42,7 +42,6 @@ export function Console() {
         break;
       case "line":
         pcm = new Float32Array(numSamps).fill(0);
-        console.log("here");
         break;
     }
 

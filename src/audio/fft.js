@@ -25,7 +25,7 @@
  * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
  * The vector can have any length. This is a wrapper function.
  */
-function transform(real, imag) {
+export function transform(real, imag) {
     const n = real.length;
     if (n != imag.length)
         throw new RangeError("Mismatched lengths");
@@ -193,4 +193,4 @@ function newArrayOfZeros(n) {
     return result;
 }
 
-export * from "./fft";
+// export * from './fft.js';
