@@ -68,7 +68,6 @@ export function Screen( {width, height, wave, displayPCM} ) {
         }
       }
       else {
-        
         const screenOvertones = fitScreenOvertones();
 
         p.stroke(NEON_PINK);
@@ -91,7 +90,7 @@ export function Screen( {width, height, wave, displayPCM} ) {
   useEffect(() => {
     // Create a new p5.js instance with the sketch function
     new p5(sketch);
-  });
+  }, [displayPCM]);
 
   return <canvas id="screen" ref={canvasRef} />;
 
