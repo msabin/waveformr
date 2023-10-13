@@ -4,16 +4,11 @@ import sineSVG from "../assets/sine.svg"
 import lineSVG from "../assets/line.svg";
 
 
-export function WaveBtn({ shape }) {
-  // const [displayTime, setDisplayTime] = useState(true);
+export function WaveBtn({ shape, onClick }) {
   const svg = eval(shape+"SVG")
 
-  function handleClick() {
-    
-  }
-
   return (
-    <button onClick={handleClick}>
+    <button onClick={onClick}>
       <img src={svg} />
     </button>
   );

@@ -15,9 +15,6 @@ function wave(pcm) {
 
 export function useWave(initialPCM) {
   const [pcm, setPCM] = useState(initialPCM);
-
-
-
   
   function setOvertones() {
     //does stuff and then

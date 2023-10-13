@@ -1,29 +1,14 @@
 import { useState } from "react";
 
-export function HzDisplay ( { Hz } ) {
-
-  const [newHz, setNewHz] = useState(Hz);
-
-  function handleUpClick() {
-    Hz *= 2 ** (1 / 12);
-    osc.frequency.setValueAtTime(Hz, context.currentTime);
-    setNewHz(Hz.toFixed(2));
-  }
-
-  function handleDownClick() {
-    Hz /= 2 ** (1 / 12);
-    osc.frequency.setValueAtTime(Hz, context.currentTime);
-    setNewHz(Hz.toFixed(2));
-  }
+export function HzDisplay ( { Hz, onIncrement, onDecrement } ) {
 
   return (
     <div>
-      <button className="up-arrow" onClick={handleUpClick}></button>
+      <button className="up-arrow" onClick={onIncrement}></button>
 
-      <p className="digital-display"> {newHz} </p>
+      <p className="digital-display"> {Hz.toFixed(2)} </p>
 
-      <button className="down-arrow" onClick={handleDownClick}></button>
+      <button className="down-arrow" onClick={onDecrement}></button>
     </div>
   )
-
 }

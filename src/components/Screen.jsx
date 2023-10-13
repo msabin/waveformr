@@ -71,6 +71,7 @@ export function Screen( {width, height, wave, displayPCM} ) {
         const screenOvertones = fitScreenOvertones();
 
         p.stroke(NEON_PINK);
+        p.fill((0, 0, 0));
         for (let i = 0; i < screenOvertones.length; i++) {
           p.rect(
             SCREEN_OVERTONE_WIDTH * i,
@@ -90,7 +91,7 @@ export function Screen( {width, height, wave, displayPCM} ) {
   useEffect(() => {
     // Create a new p5.js instance with the sketch function
     new p5(sketch);
-  }, [displayPCM]);
+  }, [displayPCM, wave]);
 
   return <canvas id="screen" ref={canvasRef} />;
 
