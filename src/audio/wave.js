@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as fft from "./fft";
 
-function waveForm(pcm) {
+function wave(pcm) {
 
   const realFreq = pcm.slice();
   const imagFreq = pcm.slice().fill(0);
@@ -24,5 +24,5 @@ export function useWave(initialPCM) {
     setPCM(pcm);
   }
 
-  return { ...waveForm(pcm), setPCM, setOvertones };
+  return [wave(pcm), setPCM, setOvertones];
 }

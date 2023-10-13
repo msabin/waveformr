@@ -1,7 +1,7 @@
-const WIDTH = 512; // Power of 2 will make everything much nicer.
-const HEIGHT = 512;
-const NEON_PINK = [255, 16, 240];
-const NEON_BLUE = [4, 217, 255];
+// const WIDTH = 512; // Power of 2 will make everything much nicer.
+// const HEIGHT = 512;
+// const NEON_PINK = [255, 16, 240];
+// const NEON_BLUE = [4, 217, 255];
 
 const A4 = 440;
 const SEMITONE_FACTOR = 2 ** (1 / 12);

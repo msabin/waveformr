@@ -1,10 +1,10 @@
-import { useState } from "react";
+// import { useState } from "react";
 import "./App.css";
-import sineSVG from "./assets/sine.svg";
-import histSVG from "./assets/histogram.svg";
-import squareSVG from "./assets/square.svg"
-import sawtoothSVG from "./assets/sawtooth.svg"
-import { Screen } from "./components/Screen";
+// import sineSVG from "./assets/sine.svg";
+// import histSVG from "./assets/histogram.svg";
+// import squareSVG from "./assets/square.svg"
+// import sawtoothSVG from "./assets/sawtooth.svg"
+// import { Screen } from "./components/Screen";
 import { Console } from "./components/Console";
 
 // function RadioBtn({ timeDomain }) {

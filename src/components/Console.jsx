@@ -12,7 +12,7 @@ export function Console() {
   const screenHeight = 512;
 
 
-  const wave = useWave(new Float32Array(screenWidth).fill(0));
+  const [wave, setPCM, setOvertones] = useWave(new Float32Array(screenWidth).fill(0));
 
   const [displayPCM, setDisplayPCM] = useState(true);
 
@@ -20,7 +20,7 @@ export function Console() {
 
 
   function handleChange(){
-    wave.setPCM(pcm);
+    setPCM(pcm);
   }
 
 
