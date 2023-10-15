@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWave } from "../audio/wave";
+import { useAudio } from "../audio/audioSetup";
 import { HzDisplay } from "./HzDisplay";
 import { Screen } from "./Screen";
 import { WaveBtn } from "./WaveBtn";
@@ -9,6 +10,9 @@ export function Console() {
   const screenWidth = 512;
   const screenHeight = 512;
   const SEMITONE_FACTOR = 2 ** (1 / 12);
+  const BASE_HZ = 110;  // A2
+
+  const consoleAudio = useAudio(BASE_HZ);
 
   const [wave, setPCM, setOvertones] = useWave(
     new Float32Array(screenWidth).fill(0)
@@ -20,6 +24,7 @@ export function Console() {
 
   function handlePCMChange(pcm) {
     setPCM(pcm);
+    consoleAudio.setWave(wave);
   }
 
   function handleWaveBtnClick(shape) {
@@ -56,15 +61,6 @@ export function Console() {
     setDisplayPCM(!displayPCM);
   }
 
-  function consoleSetup() {
-    // audioSetup
-    // midiSetup
-    // Screen sets itself up with p5 so we don't have to include it here
-  }
-
-  useEffect(() => {
-    consoleSetup();
-  }, []);
 
   return (
     <div id="console">

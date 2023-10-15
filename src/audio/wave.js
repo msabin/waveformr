@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {transform} from "./fft.js";
+import { transform } from "./fft.js";
 
 function wave(pcm) {
 
