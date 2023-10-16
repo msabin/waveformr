@@ -1,14 +1,14 @@
-
-
-
-let midi = null;
 const MIDI_PRESS = parseInt("90", 16);
 const MIDI_RELEASE = parseInt("80", 16);
 const MIDI_A4 = parseInt("45", 16);
+const A4 = 440;
 
-export function midiSetup() {
-  
+let midi = null;
+let changeConsoleHz;
+
+export function midiSetup(onChangeHz) {
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  changeConsoleHz = onChangeHz;
 }
 
 function onMIDISuccess(midiAccess) {
@@ -35,6 +35,12 @@ function listInputsAndOutputs(midiAccess) {
   }
 }
 
+function startLoggingMIDIInput(midiAccess) {
+  midiAccess.inputs.forEach((entry) => {
+    entry.onmidimessage = onMIDIMessage;
+  });
+}
+
 function onMIDIMessage(event) {
   let str = `MIDI message received at timestamp ${event.timeStamp}[${event.data.length} bytes]: `;
   for (const character of event.data) {
@@ -44,14 +50,8 @@ function onMIDIMessage(event) {
   console.log(event.data[1]);
 
   if (event.data[0] === MIDI_PRESS) {
-    distFromA4 = event.data[1] - MIDI_A4;
-    Hz = 2 ** ((1 / 12) * distFromA4) * A4;
-    osc.frequency.setValueAtTime(Hz, context.currentTime);
+    let distFromA4 = event.data[1] - MIDI_A4;
+    let Hz = 2 ** ((1 / 12) * distFromA4) * A4;
+    changeConsoleHz(Hz);
   }
-}
-
-function startLoggingMIDIInput(midiAccess) {
-  midiAccess.inputs.forEach((entry) => {
-    entry.onmidimessage = onMIDIMessage;
-  });
 }

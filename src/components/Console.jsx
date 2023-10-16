@@ -65,7 +65,7 @@ export function Console() {
 
 
   useEffect(() => {
-    midiSetup();
+    midiSetup(handleChangeHz);
   },[]);
 
   return (
