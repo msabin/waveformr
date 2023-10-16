@@ -23,8 +23,17 @@ export function Console() {
   const [Hz, setHz] = useState(110);
 
   function handlePCMChange(pcm) {
+    consoleAudio.setWave(pcm);
     setPCM(pcm);
-    consoleAudio.setWave(wave);
+  }
+
+  function handleChangeHz(newHz) {
+    consoleAudio.setHz(newHz);
+    setHz(newHz);
+  }
+
+  function handleToggle() {
+    setDisplayPCM(!displayPCM);
   }
 
   function handleWaveBtnClick(shape) {
@@ -51,14 +60,6 @@ export function Console() {
     }
 
     handlePCMChange(pcm);
-  }
-
-  function handleChangeHz(newHz) {
-    setHz(newHz);
-  }
-
-  function handleToggle() {
-    setDisplayPCM(!displayPCM);
   }
 
 

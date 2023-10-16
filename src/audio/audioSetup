@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { transform } from "./fft.js";
 
 class ConsoleAudio {
   constructor (Hz) {
@@ -13,16 +14,24 @@ class ConsoleAudio {
     this.osc.start();
   }
 
-  setWave(wave) {
-    console.log(wave.imagFreq)
+  setHz(Hz) {
+    this.osc.frequency.setValueAtTime(Hz, this.context.currentTime);
+  }
+
+  setWave(pcm) {
+    const real = pcm.slice();
+    const imag = pcm.slice().fill(0);
+
+    // Use FFT to fill real and imag with frequency domain.
+    transform(real, imag);
+
     // Create a PeriodicWave object with the spectrum.
     const period = this.context.createPeriodicWave(
-      wave.realFreq.slice(1, wave.realFreq.length / 2), // Divide by 2 to get up to Nyquist freq.
-      wave.imagFreq.slice(1, wave.imagFreq.length / 2)
+      real.slice(0, real.length / 2), // Divide by 2 to get up to Nyquist .
+      imag.slice(0, imag.length / 2)
     );
     this.osc.setPeriodicWave(period);
     this.context.resume();
-    console.log("here")
   }
 }
 
