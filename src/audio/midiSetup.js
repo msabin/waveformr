@@ -1,6 +1,13 @@
-let midi = null; // global MIDIAccess object
+
+
+
+let midi = null;
+const MIDI_PRESS = parseInt("90", 16);
+const MIDI_RELEASE = parseInt("80", 16);
+const MIDI_A4 = parseInt("45", 16);
 
 export function midiSetup() {
+  
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 }
 

@@ -37,12 +37,72 @@ let period;
 let Hz = A4 / 4;
 let baseHz = Hz;
 
+// let midi = null; // global MIDIAccess object
 
 
+// function onMIDISuccess(midiAccess) {
+//   console.log("MIDI ready!");
+//   midi = midiAccess;
+//   listInputsAndOutputs(midi);
+//   startLoggingMIDIInput(midi);
+// }
 
+// function onMIDIFailure(msg) {
+//   console.error(`Failed to get MIDI access - ${msg}`);
+// }
 
+// function listInputsAndOutputs(midiAccess) {
+//   for (const entry of midiAccess.inputs) {
+//     const input = entry[1];
+//     console.log(
+//       `Input port [type:'${input.type}']` +
+//         ` id:'${input.id}'` +
+//         ` manufacturer:'${input.manufacturer}'` +
+//         ` name:'${input.name}'` +
+//         ` version:'${input.version}'`
+//     );
+//   }
+// }
 
+// function onMIDIMessage(event) {
+//   let str = `MIDI message received at timestamp ${event.timeStamp}[${event.data.length} bytes]: `;
+//   for (const character of event.data) {
+//     str += `0x${character.toString(16)} `;
+//   }
+//   console.log(str);
+//   console.log(event.data[1]);
 
+//   if (event.data[0] === MIDI_PRESS) {
+//     distFromA4 = event.data[1] - MIDI_A4;
+//     Hz = 2 ** ((1 / 12) * distFromA4) * A4;
+//     osc.frequency.setValueAtTime(Hz, context.currentTime);
+//   }
+// }
+
+// function startLoggingMIDIInput(midiAccess) {
+//   midiAccess.inputs.forEach((entry) => {
+//     entry.onmidimessage = onMIDIMessage;
+//   });
+// }
+
+// function setup() {
+//   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+
+//   createCanvas(WIDTH, HEIGHT, document.getElementById("screen"));
+//   background(0, 0, 0);
+
+//   let waveform = new WaveForm(Hz, WIDTH);
+
+//   context = new AudioContext();
+
+//   osc = context.createOscillator();
+//   osc.connect(context.destination);
+
+//   osc.frequency.setValueAtTime(waveform.Hz, context.currentTime);
+//   osc.setPeriodicWave(context.createPeriodicWave([0,0], [0,0]))
+
+//   osc.start();
+// }
 
 // function draw() {
 //   background(0, 0, 0);

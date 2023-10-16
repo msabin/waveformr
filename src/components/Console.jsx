@@ -5,6 +5,7 @@ import { HzDisplay } from "./HzDisplay";
 import { Screen } from "./Screen";
 import { WaveBtn } from "./WaveBtn";
 import { Toggle } from "./Toggle";
+import { midiSetup } from "../audio/midiSetup";
 
 export function Console() {
   const screenWidth = 512;
@@ -62,6 +63,10 @@ export function Console() {
     handlePCMChange(pcm);
   }
 
+
+  useEffect(() => {
+    midiSetup();
+  },[]);
 
   return (
     <div id="console">
