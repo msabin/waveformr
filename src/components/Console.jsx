@@ -79,7 +79,8 @@ export function Console() {
         <Screen
           width={screenWidth}
           height={screenHeight}
-          wave={wave}
+          pcm={wave.pcm}
+          onPCMChange={handlePCMChange}
           displayPCM={displayPCM}
         />
         <div>
