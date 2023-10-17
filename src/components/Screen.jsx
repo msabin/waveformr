@@ -47,7 +47,7 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
   };
 
   myP5.lastX;
-  let lastY;
+  myP5.lastY;
   function p5MouseDragged() {
     const newX = Math.max(Math.min(myP5.mouseX, width), 0);
     const newY = Math.max(Math.min(myP5.mouseY, height), 0);
@@ -69,7 +69,7 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
       for (let i = 0; i < length; i++) {
         let t = i / length; // Interpolate t fraction between points.
   
-        let screenSample = lastY * (1 - t) + newY * t;
+        let screenSample = myP5.lastY * (1 - t) + newY * t;
   
         // Normalize the screen's wave to be PCM samples in [-1, 1].
         newPCM[myP5.lastX + sign * i] =
@@ -85,7 +85,7 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
   
         let index = Math.floor((myP5.lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
   
-        let screenHarmonic = lastY * (1 - t) + newY * t;
+        let screenHarmonic = myP5.lastY * (1 - t) + newY * t;
   
         overtones[index] = (height - screenHarmonic) / height;
       }
@@ -105,7 +105,7 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
     }
   
     myP5.lastX = newX;
-    lastY = newY;
+    myP5.lastY = newY;
 
     onPCMChange(newPCM)
   }

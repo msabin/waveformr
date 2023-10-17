@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useWave } from "../audio/wave";
 import { useAudio } from "../audio/audioSetup";
 import { HzDisplay } from "./HzDisplay";
 import { Screen } from "./Screen";
@@ -22,7 +21,6 @@ export function Console() {
   const [Hz, setHz] = useState(110);
 
   function handlePCMChange(pcm) {
-    console.log(pcm)
     consoleAudio.setWave(pcm);
     setPCM(pcm);
   }
@@ -61,7 +59,6 @@ export function Console() {
 
     handlePCMChange(newPCM);
   }
-
 
   useEffect(() => {
     midiSetup(handleChangeHz);
