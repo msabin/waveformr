@@ -63,22 +63,27 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
       return; // Don't want to divide by zero.
     }
   
+    let newPCM = pcm.slice();
     if (displayPCM) {
+
       for (let i = 0; i < length; i++) {
         let t = i / length; // Interpolate t fraction between points.
   
         let screenSample = lastY * (1 - t) + newY * t;
   
         // Normalize the screen's wave to be PCM samples in [-1, 1].
-        pcm[myP5.lastX + sign * i] =
+        newPCM[myP5.lastX + sign * i] =
           -(screenSample - height / 2) / (height / 2);
       }
   
-    } else {
-      for (let i = 0; i < length; i += RECT_WIDTH) {
+    } 
+    
+    else {
+      let overtones = screenOvertones.map((x) => (height - x)/height)
+      for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
         let t = i / length; // Interpolate t fraction between points.
   
-        let index = Math.floor((myP5.lastX + sign * i) / RECT_WIDTH);
+        let index = Math.floor((myP5.lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
   
         let screenHarmonic = lastY * (1 - t) + newY * t;
   
@@ -96,12 +101,13 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
       // Sync up the waveform view.
       inverseTransform(real, imag);
  
+      newPCM = real;
     }
   
     myP5.lastX = newX;
     lastY = newY;
 
-    onPCMChange(pcm)
+    onPCMChange(newPCM)
   }
 
 
