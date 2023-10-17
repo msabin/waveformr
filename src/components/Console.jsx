@@ -8,7 +8,7 @@ import { Toggle } from "./Toggle";
 import { midiSetup } from "../audio/midiSetup";
 
 export function Console() {
-  const screenWidth = 512;
+  const screenWidth = 512; // Power of 2 for PCM resolution that's nice for FFT
   const screenHeight = 512;
   const SEMITONE_FACTOR = 2 ** (1 / 12);
   const BASE_HZ = 110;  // A2

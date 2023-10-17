@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import p5 from "p5";
+import { useP5 } from './useP5';
 
 
 
@@ -7,8 +6,44 @@ export function Screen( {width, height, wave, displayPCM} ) {
   const NEON_PINK = [255, 16, 240];
   const NEON_BLUE = [4, 217, 255];
   const SCREEN_OVERTONE_WIDTH = 8; // Power over 2 to divide width by
+  const myP5 = useP5(p5Setup, p5Draw, p5MouseDragged);
 
-  const canvasRef = useRef();
+  function p5Setup() {
+    myP5.createCanvas(width, height, document.getElementById("screen"));
+  };
+
+  function p5Draw() {
+    myP5.background(0);
+    myP5.strokeWeight(2);
+    
+    if (displayPCM) {
+      const screenWave = fitScreenPCM();
+
+      myP5.stroke(NEON_BLUE);
+      for (let i = 0; i < screenWave.length - 1; i++) {
+        myP5.line(i, screenWave[i], i + 1, screenWave[i + 1]);
+      }
+    }
+    else {
+      const screenOvertones = fitScreenOvertones();
+
+      myP5.stroke(NEON_PINK);
+      myP5.fill((0, 0, 0));
+      for (let i = 0; i < screenOvertones.length; i++) {
+        myP5.rect(
+          SCREEN_OVERTONE_WIDTH * i,
+          screenOvertones[i],
+          SCREEN_OVERTONE_WIDTH,
+          height - screenOvertones[i]
+        );
+      }
+    }
+  };
+
+  function p5MouseDragged() {
+
+  }
+
 
   function fitScreenPCM() {
     let maxHeight = Math.max(...wave.pcm);
@@ -47,53 +82,7 @@ export function Screen( {width, height, wave, displayPCM} ) {
   }
 
 
-
-  // p5.js sketch function
-  function sketch(p) {
-
-    p.setup = () => {
-      p.createCanvas(width, height, canvasRef.current);
-    };
-
-    p.draw = () => {
-      p.background(0);
-      p.strokeWeight(2);
-      
-      if (displayPCM) {
-        const screenWave = fitScreenPCM();
-
-        p.stroke(NEON_BLUE);
-        for (let i = 0; i < screenWave.length - 1; i++) {
-          p.line(i, screenWave[i], i + 1, screenWave[i + 1]);
-        }
-      }
-      else {
-        const screenOvertones = fitScreenOvertones();
-
-        p.stroke(NEON_PINK);
-        p.fill((0, 0, 0));
-        for (let i = 0; i < screenOvertones.length; i++) {
-          p.rect(
-            SCREEN_OVERTONE_WIDTH * i,
-            screenOvertones[i],
-            SCREEN_OVERTONE_WIDTH,
-            height - screenOvertones[i]
-          );
-        }
-      }
-    };
-
-    //p.mouseDragged = () => {
-    //     changing pcm and overtones
-    // }
-  };
-
-  useEffect(() => {
-    // Create a new p5.js instance with the sketch function
-    new p5(sketch);
-  }, [displayPCM, wave]);
-
-  return <canvas id="screen" ref={canvasRef} />;
+  return <canvas id="screen" />;
 
 }
 

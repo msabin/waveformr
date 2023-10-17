@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export function HzDisplay ( { Hz, onIncrement, onDecrement } ) {
 
   return (
