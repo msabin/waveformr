@@ -1,5 +1,6 @@
 import { useP5 } from './useP5';
 import { transform, inverseTransform } from '../audio/fft';
+import { useState } from 'react';
 
 
 
@@ -8,12 +9,10 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
   const NEON_BLUE = [4, 217, 255];
   const SCREEN_OVERTONE_WIDTH = 8; // Power over 2 to divide width by
 
-  const screenWave = fitScreenPCM(pcm); 
+  const [screenWave, setScreenWave] = useState(fitScreenPCM(pcm)); 
 
-  const real = pcm.slice();
-  const imag = pcm.slice();
-  transform(real, imag)
-  const screenOvertones = fitScreenOvertones(real, imag);
+  const [screenOvertones, setScreenOvertones] = useState(
+    fitScreenOvertones(computeOvertones(pcm, width/SCREEN_OVERTONE_WIDTH)));
 
 
   const myP5 = useP5(p5Setup, p5Draw, p5MouseDragged);
@@ -49,8 +48,14 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
   myP5.lastX;
   myP5.lastY;
   function p5MouseDragged() {
-    const newX = Math.max(Math.min(myP5.mouseX, width), 0);
-    const newY = Math.max(Math.min(myP5.mouseY, height), 0);
+    const newX = myP5.mouseX;
+    const newY = myP5.mouseY;
+    if( newX < 0 || newX > width || newY < 0 || newY > height) {
+      return;
+    }
+
+    // const newX = Math.max(Math.min(myP5.mouseX, width), 0);
+    // const newY = Math.max(Math.min(myP5.mouseY, height), 0);
   
     const offsetX = newX - myP5.lastX;
   
@@ -65,49 +70,71 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
   
     let newPCM = pcm.slice();
     if (displayPCM) {
+      const newScreenWave = screenWave.slice();
 
       for (let i = 0; i < length; i++) {
         let t = i / length; // Interpolate t fraction between points.
   
-        let screenSample = myP5.lastY * (1 - t) + newY * t;
+        newScreenWave[myP5.lastX + sign * i] = myP5.lastY * (1 - t) + newY * t;
   
-        // Normalize the screen's wave to be PCM samples in [-1, 1].
-        newPCM[myP5.lastX + sign * i] =
-          -(screenSample - height / 2) / (height / 2);
+        // // Normalize the screen's wave to be PCM samples in [-1, 1].
+        // newPCM[myP5.lastX + sign * i] =
+        //   -(newScreenWave[myP5.lastX + sign * i] - height / 2) / (height / 2);
       }
-  
+
+      newPCM = newScreenWave.map((x) => -(x - height/2) / (height / 2))
+
+      setScreenOvertones(computeOvertones(newPCM, width/SCREEN_OVERTONE_WIDTH));
+      setScreenWave(newScreenWave);
     } 
     
     else {
-      let overtones = screenOvertones.map((x) => (height - x)/height)
+      const newScreenOvertones = screenOvertones.slice();
+      
       for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
         let t = i / length; // Interpolate t fraction between points.
   
         let index = Math.floor((myP5.lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
   
-        let screenHarmonic = myP5.lastY * (1 - t) + newY * t;
-  
-        overtones[index] = (height - screenHarmonic) / height;
+        newScreenOvertones[index] = myP5.lastY * (1 - t) + newY * t;
       }
-  
-  
-      real.fill(0);
-      imag.fill(0);
 
-      for (let i = 0; i < overtones.length; i++) {
-        imag[i + 1] = overtones[i];
-      }
-  
-      // Sync up the waveform view.
-      inverseTransform(real, imag);
- 
-      newPCM = real;
+      const overtones = newScreenOvertones.map((x) => (height - x)/height)
+      newPCM = computePCM(overtones);
+
+      setScreenWave(fitScreenPCM(newPCM))
+      setScreenOvertones(newScreenOvertones);
     }
   
     myP5.lastX = newX;
     myP5.lastY = newY;
 
     onPCMChange(newPCM)
+  }
+
+  function computeOvertones(pcm, numOvertones) {
+    const real = pcm.slice();
+    const imag = real.slice().fill(0);
+
+    transform(real, imag);
+
+    let overtones = real.slice(1, numOvertones + 1);
+    overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imag[i + 1] ** 2));
+
+    return overtones;
+  }
+
+  function computePCM(overtones) {
+    const real = new Float32Array(width).fill(0);
+    const imag = real.slice();
+
+    for (let i = 0; i < overtones.length; i++) {
+      imag[i + 1] = overtones[i];
+    }
+
+    inverseTransform(real, imag);
+
+    return real;
   }
 
 
@@ -127,11 +154,7 @@ export function Screen( {width, height, pcm, onPCMChange, displayPCM} ) {
     );
   }
 
-  function fitScreenOvertones(realFreq, imagFreq) {
-    // Just take the amplitude of the frequency domain to display
-    let overtones = realFreq.slice(1, realFreq.length / SCREEN_OVERTONE_WIDTH + 1);
-    overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imagFreq[i + 1] ** 2));
-
+  function fitScreenOvertones(overtones) {
     let maxOvertone = Math.max(...overtones);
     maxOvertone = (maxOvertone === 0) ? 1 : maxOvertone;
 
