@@ -21,7 +21,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   // currentPCM and we should thus update our state to match the new pcm
   if (pcm != currentPCM) {
     setScreenWave(fitScreenPCM(pcm));
-    setScreenOvertones(computeOvertones(pcm, width / SCREEN_OVERTONE_WIDTH));
+    setScreenOvertones(fitScreenOvertones(
+      computeOvertones(pcm, width / SCREEN_OVERTONE_WIDTH)
+    ));
     setCurrentPCM(pcm);
   }
 
@@ -93,9 +95,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
       newPCM = normalizeWave(newScreenWave);
 
-      setScreenOvertones(
+      setScreenOvertones(fitScreenOvertones(
         computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH)
-      );
+      ));
       setScreenWave(newScreenWave);
     } else {
       const newScreenOvertones = screenOvertones.slice();
@@ -108,7 +110,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
         newScreenOvertones[index] = myP5.lastY * (1 - t) + newY * t;
       }
 
-      const overtones = newScreenOvertones.map((x) => (height - x) / height);
+      const overtones = normalizeOvertones(newScreenOvertones);
       newPCM = computePCM(overtones);
 
       setScreenWave(fitScreenPCM(newPCM));
@@ -149,6 +151,10 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
   function normalizeWave(screenWave) {
     return screenWave.map((x) => -(x - height / 2) / (height / 2));
+  }
+
+  function normalizeOvertones(screenOvertones) {
+    return screenOvertones.map((x) => (height - x) / height);
   }
 
   function fitScreenPCM(pcmWave) {
