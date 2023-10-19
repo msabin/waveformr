@@ -1,11 +1,12 @@
-import { useP5 } from "./useP5";
-import { transform, inverseTransform } from "../audio/fft";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
+import { transform, inverseTransform } from '../audio/fft';
 
 export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
-  const NEON_PINK = [255, 16, 240];
-  const NEON_BLUE = [4, 217, 255];
-  const SCREEN_OVERTONE_WIDTH = 8; // Power over 2 to divide width by
+  const NEON_PINK = 'rgb(255 16 240)';
+  const NEON_BLUE = 'rgb(4 217 255)';
+  const SCREEN_OVERTONE_WIDTH = 8;
+
+  const canvasRef = useRef(null);
 
   const [screenWave, setScreenWave] = useState(fitScreenPCM(pcm));
   const [screenOvertones, setScreenOvertones] = useState(
@@ -13,7 +14,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   );
 
   const [currentPCM, setCurrentPCM] = useState(pcm);
-  
+
   // pcm can be changed in this component by drawing on the Screen (in which 
   // case we are in sync with currentPCM and our screenWave and screenOvertones
   // are holding state for what they should look like) or pcm is changed in some
@@ -26,27 +27,25 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     ));
     setCurrentPCM(pcm);
   }
+  
 
-  const myP5 = useP5(p5Setup, p5Draw, p5MouseDragged);
-
-  function p5Setup() {
-    myP5.createCanvas(width, height, document.getElementById("screen"));
-  }
-
-  function p5Draw() {
-    myP5.background(0);
-    myP5.strokeWeight(2);
+  function draw(ctx) {
+    ctx.fillRect(0, 0, width, height);
+    ctx.lineWidth = 2;
 
     if (displayPCM) {
-      myP5.stroke(NEON_BLUE);
+      ctx.strokeStyle = NEON_BLUE;
+      ctx.beginPath();
+      ctx.moveTo(0, screenWave[0]);
       for (let i = 0; i < screenWave.length - 1; i++) {
-        myP5.line(i, screenWave[i], i + 1, screenWave[i + 1]);
+        ctx.lineTo(i + 1, screenWave[i + 1]);
       }
+      ctx.stroke();
+
     } else {
-      myP5.stroke(NEON_PINK);
-      myP5.fill((0, 0, 0));
+      ctx.strokeStyle = NEON_PINK;
       for (let i = 0; i < screenOvertones.length; i++) {
-        myP5.rect(
+        ctx.strokeRect(
           SCREEN_OVERTONE_WIDTH * i,
           screenOvertones[i],
           SCREEN_OVERTONE_WIDTH,
@@ -56,82 +55,106 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     }
   }
 
-  myP5.lastX;
-  myP5.lastY;
-  function p5MouseDragged() {
-    const newX = myP5.mouseX;
-    const newY = myP5.mouseY;
-    if (newX < 0 || newX > width || newY < 0 || newY > height) {
-      return;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+
+    draw(context)
+
+    let isDrawing = false;
+    let lastX, lastY;
+
+    function handleMouseDown(event) {
+      isDrawing = true;
+      lastX = event.offsetX;
+      lastY = event.offsetY;
     }
 
-    // const newX = Math.max(Math.min(myP5.mouseX, width), 0);
-    // const newY = Math.max(Math.min(myP5.mouseY, height), 0);
-
-    const offsetX = newX - myP5.lastX;
-
-    // Fill sound wave array by interpolating between current mouse
-    // position and previous mouse position.
-    const length = Math.abs(offsetX);
-    const sign = Math.sign(offsetX);
-
-    if (Math.floor(length) === 0) {
-      return; // Don't want to divide by zero.
+    function handleMouseUp() {
+      isDrawing = false;
     }
 
-    let newPCM = currentPCM.slice();
-    if (displayPCM) {
-      const newScreenWave = screenWave.slice();
+    function handleMouseMove(event) {
+      if (!isDrawing) return;
 
-      for (let i = 0; i < length; i++) {
-        let t = i / length; // Interpolate t fraction between points.
+      const newX = event.offsetX;
+      const newY = event.offsetY;
 
-        newScreenWave[myP5.lastX + sign * i] = myP5.lastY * (1 - t) + newY * t;
-
-        // // Normalize the screen's wave to be PCM samples in [-1, 1].
-        // newPCM[myP5.lastX + sign * i] =
-        //   -(newScreenWave[myP5.lastX + sign * i] - height / 2) / (height / 2);
+      if (newX < 0 || newX > width || newY < 0 || newY > height) {
+        isDrawing = false;
+        return;
       }
 
-      newPCM = normalizeWave(newScreenWave);
+      const offsetX = newX - lastX;
+      const length = Math.abs(offsetX);
+      const sign = Math.sign(offsetX);
 
-      setScreenOvertones(fitScreenOvertones(
-        computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH)
-      ));
-      setScreenWave(newScreenWave);
-    } else {
-      const newScreenOvertones = screenOvertones.slice();
-
-      for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
-        let t = i / length; // Interpolate t fraction between points.
-
-        let index = Math.floor((myP5.lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
-
-        newScreenOvertones[index] = myP5.lastY * (1 - t) + newY * t;
+      if (Math.floor(length) === 0) {
+        return;
       }
 
-      const overtones = normalizeOvertones(newScreenOvertones);
-      newPCM = computePCM(overtones);
+      let newPCM = currentPCM.slice();
 
-      setScreenWave(fitScreenPCM(newPCM));
-      setScreenOvertones(newScreenOvertones);
+      if (displayPCM) {
+        const newScreenWave = screenWave.slice();
+
+        for (let i = 0; i < length; i++) {
+          let t = i / length;
+          newScreenWave[lastX + sign * i] = lastY * (1 - t) + newY * t;
+        }
+
+        newPCM = normalizeWave(newScreenWave);
+
+        setScreenOvertones(
+          fitScreenOvertones(computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH))
+        );
+        setScreenWave(newScreenWave);
+      } else {
+        const newScreenOvertones = screenOvertones.slice();
+
+        for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
+          let t = i / length;
+          let index = Math.floor((lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
+          newScreenOvertones[index] = lastY * (1 - t) + newY * t;
+        }
+
+        const overtones = normalizeOvertones(newScreenOvertones);
+        newPCM = computePCM(overtones);
+
+        setScreenWave(fitScreenPCM(newPCM));
+        setScreenOvertones(newScreenOvertones);
+      }
+
+      lastX = newX;
+      lastY = newY;
+
+      setCurrentPCM(newPCM);
+      onPCMChange(newPCM);
+      draw(context);
     }
 
-    myP5.lastX = newX;
-    myP5.lastY = newY;
+    canvas.addEventListener('mousedown', handleMouseDown);
+    canvas.addEventListener('mouseup', handleMouseUp);
+    canvas.addEventListener('mousemove', handleMouseMove);
 
-    setCurrentPCM(newPCM);
-    onPCMChange(newPCM);
-  }
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      canvas.removeEventListener('mouseup', handleMouseUp);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [displayPCM, pcm]);
+
 
   function computeOvertones(pcm, numOvertones) {
     const real = pcm.slice();
     const imag = real.slice().fill(0);
-
     transform(real, imag);
 
     let overtones = real.slice(1, numOvertones + 1);
-    overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imag[i + 1] ** 2));
+    overtones = overtones.map(function (x, i) {
+      return Math.sqrt(x ** 2 + imag[i + 1] ** 2);
+    });
 
     return overtones;
   }
@@ -150,44 +173,38 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   }
 
   function normalizeWave(screenWave) {
-    return screenWave.map((x) => -(x - height / 2) / (height / 2));
+    return screenWave.map(function (x) {
+      return -(x - height / 2) / (height / 2);
+    });
   }
 
   function normalizeOvertones(screenOvertones) {
-    return screenOvertones.map((x) => (height - x) / height);
+    return screenOvertones.map(function (x) {
+      return (height - x) / height;
+    });
   }
 
   function fitScreenPCM(pcmWave) {
     let maxHeight = Math.max(...pcmWave);
     maxHeight = maxHeight === 0 ? 1 : maxHeight;
 
-    // Scale the maximum height of the wave to be reach screenScale
-    // fraction of full screen length.
     const screenScale = 2 / 3;
 
-    // Normalize the wave by its maximum height, scale it to the screen,
-    // flip the y-axis to a normal Cartesian system, and shift the wave
-    // to the center of the screen.
-    return pcmWave.map(
-      (x) => screenScale * (x / maxHeight) * (-height / 2) + height / 2
-    );
+    return pcmWave.map(function (x) {
+      return screenScale * (x / maxHeight) * (-height / 2) + height / 2;
+    });
   }
 
   function fitScreenOvertones(overtones) {
     let maxOvertone = Math.max(...overtones);
     maxOvertone = maxOvertone === 0 ? 1 : maxOvertone;
 
-    // Scale the maximum height of the wave to be reach screenScale
-    // fraction of full screen length.
     const screenScale = 2 / 3;
 
-    // Normalize the overtones by its maximum height, scale it to the screen,
-    // flip the y-axis to a normal Cartesian system, and shift the wave
-    // to the bottom of the screen.
-    return overtones.map(
-      (x) => height - (x / maxOvertone) * height * screenScale
-    );
+    return overtones.map(function (x) {
+      return height - (x / maxOvertone) * height * screenScale;
+    });
   }
 
-  return <canvas id="screen" />;
+  return <canvas id="screen" ref={canvasRef} width={width} height={height} />;
 }
