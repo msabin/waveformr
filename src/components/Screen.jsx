@@ -27,6 +27,79 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     ));
     setCurrentPCM(pcm);
   }
+
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [lastPoint, setLastPoint] = useState([0, screenWave[0]]);
+
+
+  function handleMouseDown({nativeEvent}) {
+    setIsDrawing(true);
+    setLastPoint([nativeEvent.offsetX, nativeEvent.offsetY]);
+  }
+
+  function handleMouseUp() {
+    setIsDrawing(false);
+  }
+
+  function handleMouseMove({nativeEvent}) {
+    if (!isDrawing) return;
+
+    const newX = nativeEvent.offsetX;
+    const newY = nativeEvent.offsetY;
+
+    const [lastX, lastY] = lastPoint;
+
+    if (newX < 0 || newX > width || newY < 0 || newY > height) {
+      isDrawing = false;
+      return;
+    }
+
+    const offsetX = newX - lastX;
+    const length = Math.abs(offsetX);
+    const sign = Math.sign(offsetX);
+
+    if (Math.floor(length) === 0) {
+      return;
+    }
+
+    let newPCM = currentPCM.slice();
+
+    if (displayPCM) {
+      const newScreenWave = screenWave.slice();
+
+      for (let i = 0; i < length; i++) {
+        let t = i / length;
+        newScreenWave[lastX + sign * i] = lastY * (1 - t) + newY * t;
+      }
+
+      newPCM = normalizeWave(newScreenWave);
+
+      setScreenOvertones(
+        fitScreenOvertones(computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH))
+      );
+      setScreenWave(newScreenWave);
+    } else {
+      const newScreenOvertones = screenOvertones.slice();
+
+      for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
+        let t = i / length;
+        let index = Math.floor((lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
+        newScreenOvertones[index] = lastY * (1 - t) + newY * t;
+      }
+
+      const overtones = normalizeOvertones(newScreenOvertones);
+      newPCM = computePCM(overtones);
+
+      setScreenWave(fitScreenPCM(newPCM));
+      setScreenOvertones(newScreenOvertones);
+    }
+
+    setLastPoint([newX, newY]);
+    setCurrentPCM(newPCM);
+    onPCMChange(newPCM);
+  }
+
+
   
 
   function draw(ctx) {
@@ -62,88 +135,8 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
     draw(context)
 
-    let isDrawing = false;
-    let lastX, lastY;
 
-    function handleMouseDown(event) {
-      isDrawing = true;
-      lastX = event.offsetX;
-      lastY = event.offsetY;
-    }
-
-    function handleMouseUp() {
-      isDrawing = false;
-    }
-
-    function handleMouseMove(event) {
-      if (!isDrawing) return;
-
-      const newX = event.offsetX;
-      const newY = event.offsetY;
-
-      if (newX < 0 || newX > width || newY < 0 || newY > height) {
-        isDrawing = false;
-        return;
-      }
-
-      const offsetX = newX - lastX;
-      const length = Math.abs(offsetX);
-      const sign = Math.sign(offsetX);
-
-      if (Math.floor(length) === 0) {
-        return;
-      }
-
-      let newPCM = currentPCM.slice();
-
-      if (displayPCM) {
-        const newScreenWave = screenWave.slice();
-
-        for (let i = 0; i < length; i++) {
-          let t = i / length;
-          newScreenWave[lastX + sign * i] = lastY * (1 - t) + newY * t;
-        }
-
-        newPCM = normalizeWave(newScreenWave);
-
-        setScreenOvertones(
-          fitScreenOvertones(computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH))
-        );
-        setScreenWave(newScreenWave);
-      } else {
-        const newScreenOvertones = screenOvertones.slice();
-
-        for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
-          let t = i / length;
-          let index = Math.floor((lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
-          newScreenOvertones[index] = lastY * (1 - t) + newY * t;
-        }
-
-        const overtones = normalizeOvertones(newScreenOvertones);
-        newPCM = computePCM(overtones);
-
-        setScreenWave(fitScreenPCM(newPCM));
-        setScreenOvertones(newScreenOvertones);
-      }
-
-      lastX = newX;
-      lastY = newY;
-
-      setCurrentPCM(newPCM);
-      onPCMChange(newPCM);
-      draw(context);
-    }
-
-    canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mouseup', handleMouseUp);
-    canvas.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      canvas.removeEventListener('mousedown', handleMouseDown);
-      canvas.removeEventListener('mouseup', handleMouseUp);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [displayPCM, pcm]);
+  }, [currentPCM]);
 
 
   function computeOvertones(pcm, numOvertones) {
@@ -206,5 +199,15 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     });
   }
 
-  return <canvas id="screen" ref={canvasRef} width={width} height={height} />;
+  return (
+    <canvas 
+      id="screen" 
+      ref={canvasRef} 
+      width={width} 
+      height={height}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
+    />
+  );
 }
