@@ -33,42 +33,43 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
 
   function handleMouseDown({nativeEvent}) {
-    setIsDrawing(true);
+    console.log(nativeEvent);
     setLastPoint([nativeEvent.offsetX, nativeEvent.offsetY]);
+    setIsDrawing(true);
   }
 
   function handleMouseUp() {
     setIsDrawing(false);
   }
 
+  function handleMouseEnter({nativeEvent}) {
+    console.log(nativeEvent)
+    if (nativeEvent.buttons === 1) {
+      handleMouseDown({nativeEvent})
+    }
+  }
+
   function handleMouseMove({nativeEvent}) {
     if (!isDrawing) return;
-
-    const newX = nativeEvent.offsetX;
-    const newY = nativeEvent.offsetY;
+    
+    const newX = Math.min(Math.max(0, nativeEvent.offsetX), width);
+    const newY = Math.min(Math.max(0, nativeEvent.offsetY), height);
 
     const [lastX, lastY] = lastPoint;
 
-    if (newX < 0 || newX > width || newY < 0 || newY > height) {
-      isDrawing = false;
-      return;
-    }
-
-    const offsetX = newX - lastX;
-    const length = Math.abs(offsetX);
-    const sign = Math.sign(offsetX);
-
-    if (Math.floor(length) === 0) {
-      return;
-    }
+    const deltaX = newX - lastX;
+    const length = Math.abs(deltaX);
+    const sign = Math.sign(deltaX);
 
     let newPCM = currentPCM.slice();
 
     if (displayPCM) {
       const newScreenWave = screenWave.slice();
 
-      for (let i = 0; i < length; i++) {
-        let t = i / length;
+      for (let i = 0; i <= length; i++) {
+        let t;
+        if (length === 0) { t = 1 }
+        else { t = i / length };
         newScreenWave[lastX + sign * i] = lastY * (1 - t) + newY * t;
       }
 
@@ -78,11 +79,14 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
         fitScreenOvertones(computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH))
       );
       setScreenWave(newScreenWave);
+
     } else {
       const newScreenOvertones = screenOvertones.slice();
 
-      for (let i = 0; i < length; i += SCREEN_OVERTONE_WIDTH) {
-        let t = i / length;
+      for (let i = 0; i <= length; i += SCREEN_OVERTONE_WIDTH) {
+        let t;
+        if (length === 0) { t = 1 }
+        else { t = i / length };
         let index = Math.floor((lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
         newScreenOvertones[index] = lastY * (1 - t) + newY * t;
       }
@@ -128,15 +132,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     }
   }
 
-
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-
-    draw(context)
-
-
-  }, [currentPCM]);
+    draw(canvasRef.current.getContext('2d'))
+  });
 
 
   function computeOvertones(pcm, numOvertones) {
@@ -208,6 +206,8 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseUp}
+      // onMouseEnter={handleMouseEnter}
     />
   );
 }
