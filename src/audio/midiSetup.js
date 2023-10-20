@@ -7,7 +7,12 @@ let midi = null;
 let changeConsoleHz;
 
 export function midiSetup(onChangeHz) {
-  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  try{
+    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  }catch{
+    alert(
+      "This browser doesn't support MIDI.  If you would like to use MIDI with this app, please use a different browser.");
+  }
   changeConsoleHz = onChangeHz;
 }
 
