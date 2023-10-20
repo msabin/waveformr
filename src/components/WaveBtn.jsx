@@ -8,7 +8,7 @@ export function WaveBtn({ shape, onClick }) {
   const svg = eval(shape+"SVG")
 
   return (
-    <button onClick={onClick}>
+    <button className="wave-button" onClick={onClick}>
       <img src={svg} />
     </button>
   );
