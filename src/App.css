@@ -12,16 +12,16 @@
 #console {
   background-color: rgb(117 117 117);
   border-radius: 2rem;
-  padding: 4rem;
+  padding: 60px 7px;
   display: flex;
-  gap: 25px;
-  box-shadow: inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), -4px -3px 20px 0 rgb(127 235 255), 3px 2px 20px 0 rgb(255 127 249);
+  /* gap: 25px; */
+  box-shadow: inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), -4px -3px 20px 0 rgb(0 215 255), 3px 2px 20px 0 rgb(255 47 245);
 }
 
 div#middle-console {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 34px;
 }
 
 
@@ -42,29 +42,62 @@ button {
 }
 
 
+div#wave-buttons {
+  gap: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+
+
 div#hz-area {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 72px 0px;
+  padding: 72px 34px;
+  z-index: 1;
 }
 
 .up-arrow {
+  position: relative;
   padding: 0;
   background-color: transparent;
   border-radius: 0rem;
   border-top: none;
+  border-bottom: 33px solid hsl(179.08deg 100% 25%);
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  clip-path: polygon(0 33px, 50px 0px, 100px 33px);
+  /* z-index: 2; */
+}
+
+.up-arrow::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -51px;
+  background-color: transparent;
+  /* z-index: -1; */
+  border-top: none;
   border-bottom: 33px solid hsl(179.08deg 100% 40.55%);
   border-left: 50px solid transparent;
   border-right: 50px solid transparent;
-  /* box-shadow: inset -1px -3px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%); */
 }
 
-div#wave-buttons {
-  gap: 60px;
-  display: flex;
-  justify-content: center;
+.up-arrow::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -94px;
+  background-color: transparent;
+  z-index: 1;
+  border-top: none;
+  border-bottom: 33px solid hsl(179.08deg 100% 50%);
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  rotate: 180deg;
 }
+
 
 
 .down-arrow {
@@ -77,6 +110,12 @@ div#wave-buttons {
   border-right: 50px solid transparent;
   /* box-shadow: inset -1px -3px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%); */
 }
+
+
+
+
+
+
 
 
 .digital-display {
@@ -98,7 +137,7 @@ div#toggle-area {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  padding: 36px 0px;
+  padding: 36px 40px;
 }
 
 .toggle {
