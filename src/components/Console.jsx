@@ -66,12 +66,15 @@ export function Console() {
 
   return (
     <div id="console">
-      <HzDisplay
-        Hz={Hz}
-        onIncrement={() => handleChangeHz(Hz * SEMITONE_FACTOR)}
-        onDecrement={() => handleChangeHz(Hz / SEMITONE_FACTOR)}
-      ></HzDisplay>
-      <div>
+      <div id="hz-area">
+        <HzDisplay
+          Hz={Hz}
+          onIncrement={() => handleChangeHz(Hz * SEMITONE_FACTOR)}
+          onDecrement={() => handleChangeHz(Hz / SEMITONE_FACTOR)}
+        ></HzDisplay>
+      </div>
+
+      <div id="middle-console">
         <Screen
           width={screenWidth}
           height={screenHeight}
@@ -98,6 +101,7 @@ export function Console() {
           ></WaveBtn>
         </div>
       </div>
+      
       <div id="toggle-area">
         <Toggle isPressed={displayPCM} onToggle={handleToggle}></Toggle>
       </div>

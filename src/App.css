@@ -18,6 +18,13 @@
   box-shadow: inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), -4px -3px 20px 0 rgb(127 235 255), 3px 2px 20px 0 rgb(255 127 249);
 }
 
+div#middle-console {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
 #screen {
   border-style: inset;
   border-width: 8px;
@@ -35,6 +42,13 @@ button {
 }
 
 
+div#hz-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 72px 0px;
+}
+
 .up-arrow {
   padding: 0;
   background-color: transparent;
@@ -44,6 +58,12 @@ button {
   border-left: 50px solid transparent;
   border-right: 50px solid transparent;
   /* box-shadow: inset -1px -3px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%); */
+}
+
+div#wave-buttons {
+  gap: 72px;
+  display: flex;
+  justify-content: center;
 }
 
 
@@ -78,6 +98,7 @@ div#toggle-area {
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  padding: 36px 0px;
 }
 
 .toggle {
