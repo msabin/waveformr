@@ -5,9 +5,9 @@ export function Toggle( { isPressed, onToggle } ) {
 
   return (
     <>
-      <div>
-        <img className="digital-display" src={sineSVG} />
-      </div>
+      
+      <img className="digital-display" src={sineSVG} />
+
 
       <button
         className="toggle"
@@ -16,9 +16,9 @@ export function Toggle( { isPressed, onToggle } ) {
         onClick={onToggle}
       ></button>
 
-      <div>
-        <img className="digital-display" src={histSVG} />
-      </div>
+      
+      <img className="digital-display" src={histSVG} />
+    
     </>
   );
 }

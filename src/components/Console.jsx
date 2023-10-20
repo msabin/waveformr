@@ -79,7 +79,7 @@ export function Console() {
           onPCMChange={handlePCMChange}
           displayPCM={displayPCM}
         />
-        <div>
+        <div id="wave-buttons">
           <WaveBtn
             shape="sine"
             onClick={() => handleWaveBtnClick("sine")}
@@ -98,7 +98,7 @@ export function Console() {
           ></WaveBtn>
         </div>
       </div>
-      <div>
+      <div id="toggle-area">
         <Toggle isPressed={displayPCM} onToggle={handleToggle}></Toggle>
       </div>
     </div>
