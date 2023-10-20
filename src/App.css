@@ -71,6 +71,10 @@ div#hz-area {
   /* z-index: 2; */
 }
 
+.up-arrow:focus {
+  scale: 1.1;
+}
+
 .up-arrow::before {
   content: '';
   position: absolute;
@@ -102,17 +106,46 @@ div#hz-area {
 
 .down-arrow {
   padding: 0;
+  position: relative;
   background-color: transparent;
   border-radius: 0rem;
-  border-top: none;
-  border-top: 33px solid hsl(179.08deg 100% 40.55%);
+  border-bottom: none;
+  border-top: 33px solid hsl(179.08deg 100% 25%);
   border-left: 50px solid transparent;
   border-right: 50px solid transparent;
-  /* box-shadow: inset -1px -3px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%); */
+  clip-path: polygon(0 0px, 100px 0px, 50px 33px);
 }
 
+.down-arrow:focus {
+  scale: 1.1;
+}
 
+.down-arrow::before {
+  content: '';
+  position: absolute;
+  top: -33px;
+  left: -56px;
+  background-color: transparent;
+  /* z-index: -1; */
+  border-top: 33px solid hsl(179.08deg 100% 40.55%);
+  border-bottom: none;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+}
 
+.down-arrow::after {
+  content: '';
+  position: absolute;
+  top: -65px;
+  left: -54px;
+  background-color: transparent;
+  z-index: 1;
+  border-top: 33px solid hsl(179.08deg 100% 50%);
+  border-bottom: none;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  rotate: 180deg;
+}
 
 
 
