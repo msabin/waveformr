@@ -1,4 +1,2 @@
-<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="25" height="25" viewBox="-5 -20 200 200">
-    <path d="M0,70 C40,10 65,10 105,80 S150,150 180,80" stroke="hsl(310.17deg 100% 44%)" stroke-width="12px" fill="transparent" />
-    <path d="M10,90 C40,30 65,30 95,100 S150,170 185,100" stroke="hsl(310.17deg 100% 44%)" stroke-width="12px" fill="transparent" />
-</svg>
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="m2 13 v-2 h20 v2 z" stroke="hsl(310.17deg 100% 44%)" fill="transparent" stroke-width="1.5" /></svg>

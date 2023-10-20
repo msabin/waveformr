@@ -1,5 +1,5 @@
-import sineSVG from "../assets/sine.svg";
-import histSVG from "../assets/histogram.svg";
+import sineSVG from "../assets/sineDisp.svg";
+import histSVG from "../assets/histDisp.svg";
 
 export function Toggle( { isPressed, onToggle } ) {
 

@@ -33,7 +33,7 @@ div#middle-console {
 
 button {
   /* margin: 1rem; */
-  padding: 5px 14px;
+  padding: 7px 22px;
   border-radius: 0.5rem;
   border-width: 0.25rem;
   border-style: none;
@@ -61,7 +61,7 @@ div#hz-area {
 }
 
 div#wave-buttons {
-  gap: 72px;
+  gap: 60px;
   display: flex;
   justify-content: center;
 }
