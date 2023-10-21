@@ -9,7 +9,6 @@ import { midiSetup } from "../audio/midiSetup";
 export function Console() {
   const screenWidth = 512; // Power of 2 for PCM resolution that's nice for FFT
   const screenHeight = 512;
-  const SEMITONE_FACTOR = 2 ** (1 / 12);
   const BASE_HZ = 110;  // A2
 
   const consoleAudio = useAudio(BASE_HZ);
@@ -69,8 +68,7 @@ export function Console() {
       <div id="hz-area">
         <HzDisplay
           Hz={Hz}
-          onIncrement={() => handleChangeHz(Hz * SEMITONE_FACTOR)}
-          onDecrement={() => handleChangeHz(Hz / SEMITONE_FACTOR)}
+          onChangeHz={handleChangeHz}
         ></HzDisplay>
       </div>
 
