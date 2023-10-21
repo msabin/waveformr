@@ -12,7 +12,7 @@
 #console {
   background-color: rgb(117 117 117);
   border-radius: 2rem;
-  padding: 60px 7px;
+  padding: 65px 38px 60px 5px;
   display: flex;
   /* gap: 25px; */
   box-shadow: inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), -4px -3px 20px 0 rgb(0 215 255), 3px 2px 20px 0 rgb(255 47 245);
@@ -53,8 +53,9 @@ div#wave-buttons {
 div#hz-area {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
-  padding: 72px 34px;
+  padding: 50px 34px;
   z-index: 1;
 }
 
@@ -170,7 +171,7 @@ div#toggle-area {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  padding: 36px 40px;
+  padding: 36px 36px;
 }
 
 .toggle {
