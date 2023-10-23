@@ -1,6 +1,7 @@
-import {
-  __commonJS
-} from "./chunk-CQXHTUV2.js";
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
 
 // node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS({
@@ -1887,6 +1888,7 @@ var require_react = __commonJS({
 });
 
 export {
+  __commonJS,
   require_react
 };
 /*! Bundled license information:
@@ -1902,4 +1904,4 @@ react/cjs/react.development.js:
    * LICENSE file in the root directory of this source tree.
    *)
 */
-//# sourceMappingURL=chunk-Y4TTJMME.js.map
+//# sourceMappingURL=chunk-HQYZZ6R6.js.map
