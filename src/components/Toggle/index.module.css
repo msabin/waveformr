@@ -1,0 +1,28 @@
+.toggle {
+  border-radius: 2rem;
+  padding: 50px 25px;
+  background-color: #414141;
+  /* background-color: #b3b3b3; */
+  position: relative;
+  box-shadow: inset 1px 1px 5px 0 black;
+}
+
+.toggle::before {
+  background-color: hsl(179.08deg 100% 40.55%);
+  padding: 30px 20px;
+  content: "";
+  border-radius: 1.5rem;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  box-shadow: inset -1px -2px 0px 0px hsl(179.08deg 100% 25%),
+    inset 1px 2px 0px 0px hsl(179.08deg 100% 50%);
+}
+
+.toggle[aria-pressed="false"]::before {
+  -webkit-transform: translateY(29px);
+  -ms-transform: translateY(29px);
+  transform: translateY(29px);
+}

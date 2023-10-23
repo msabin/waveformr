@@ -1,34 +1,8 @@
-:root {
-  --color: #000;
-}
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
-
-#console {
-  background-color: rgb(117 117 117);
-  border-radius: 2rem;
-  padding: 65px 38px 60px 5px;
-  display: flex;
-  /* gap: 25px; */
-  box-shadow: inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), -4px -3px 20px 0 rgb(0 215 255), 3px 2px 20px 0 rgb(255 47 245);
-}
-
-div#middle-console {
-  display: flex;
-  flex-direction: column;
-  gap: 34px;
-}
-
-
-#screen {
-  border-style: inset;
-  border-width: 8px;
-  border-color: #9a9999;
 }
 
 button {
@@ -38,166 +12,18 @@ button {
   border-width: 0.25rem;
   border-style: none;
   background-color: hsl(179.08deg 100% 37.25%);
-  box-shadow: inset -1px -4px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%);
+  box-shadow: inset -1px -4px 0px 0px hsl(179.08deg 100% 25%),
+    inset 1px 2px 0px 0px hsl(179.08deg 100% 50%);
 }
-
-
-div#wave-buttons {
-  gap: 50px;
-  display: flex;
-  justify-content: center;
-}
-
-
-
-div#hz-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  padding: 50px 34px;
-  z-index: 1;
-}
-
-.up-arrow {
-  position: relative;
-  padding: 0;
-  background-color: transparent;
-  border-radius: 0rem;
-  border-top: none;
-  border-bottom: 33px solid hsl(179.08deg 100% 25%);
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  clip-path: polygon(0 33px, 50px 0px, 100px 33px);
-  /* z-index: 2; */
-}
-
-.up-arrow:focus {
-  scale: 1.1;
-}
-
-.up-arrow::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -51px;
-  background-color: transparent;
-  /* z-index: -1; */
-  border-top: none;
-  border-bottom: 33px solid hsl(179.08deg 100% 40.55%);
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-}
-
-.up-arrow::after {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -94px;
-  background-color: transparent;
-  z-index: 1;
-  border-top: none;
-  border-bottom: 33px solid hsl(179.08deg 100% 50%);
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  rotate: 180deg;
-}
-
-
-
-.down-arrow {
-  padding: 0;
-  position: relative;
-  background-color: transparent;
-  border-radius: 0rem;
-  border-bottom: none;
-  border-top: 33px solid hsl(179.08deg 100% 25%);
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  clip-path: polygon(0 0px, 100px 0px, 50px 33px);
-}
-
-.down-arrow:focus {
-  scale: 1.1;
-}
-
-.down-arrow::before {
-  content: '';
-  position: absolute;
-  top: -33px;
-  left: -56px;
-  background-color: transparent;
-  /* z-index: -1; */
-  border-top: 33px solid hsl(179.08deg 100% 40.55%);
-  border-bottom: none;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-}
-
-.down-arrow::after {
-  content: '';
-  position: absolute;
-  top: -65px;
-  left: -54px;
-  background-color: transparent;
-  z-index: 1;
-  border-top: 33px solid hsl(179.08deg 100% 50%);
-  border-bottom: none;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  rotate: 180deg;
-}
-
-
-
-
 
 .digital-display {
-  font-family: 'Digital Numbers', sans-serif;
+  font-family: "Digital Numbers", sans-serif;
   background-color: hsl(177deg, 98%, 10%);
   color: hsl(177deg, 98%, 60%);
-  border-radius: .25rem;
-  padding: .2rem;
+  border-radius: 0.25rem;
+  padding: 0.2rem;
   border-style: inset;
   border-width: 4px;
   border-color: #9a9999;
-  margin: 0
-}
-
-
-
-div#toggle-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  padding: 36px 36px;
-}
-
-.toggle {
-  border-radius: 2rem;
-  padding: 50px 25px;
-  background-color: #414141;
-  /* background-color: #b3b3b3; */
-  position: relative;
-  box-shadow: inset 1px 1px 5px 0 black;
-}
-
-.toggle::before {
-  background-color: hsl(179.08deg 100% 40.55%);
-  padding: 30px 20px;
-  content: "";
-  border-radius: 1.5rem;
-  position: absolute;
-  left: 5px;
-  top: 5px;
-  -webkit-transition: .4s;
-  transition: .4s;
-  box-shadow: inset -1px -2px 0px 0px hsl(179.08deg 100% 25%), inset 1px 2px 0px 0px hsl(179.08deg 100% 50%);
-}
-
-.toggle[aria-pressed="false"]::before {
-  -webkit-transform: translateY(29px);
-  -ms-transform: translateY(29px);
-  transform: translateY(29px);
+  margin: 0;
 }

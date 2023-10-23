@@ -2,14 +2,14 @@ import { useRef } from "react";
 import { transform } from "./fft.js";
 
 class ConsoleAudio {
-  constructor (Hz) {
+  constructor(Hz) {
     this.context = new AudioContext();
     this.osc = this.context.createOscillator();
 
     this.osc.connect(this.context.destination);
 
     this.osc.frequency.setValueAtTime(Hz, this.context.currentTime);
-    this.osc.setPeriodicWave(this.context.createPeriodicWave([0,0], [0,0]))
+    this.osc.setPeriodicWave(this.context.createPeriodicWave([0, 0], [0, 0]));
 
     this.osc.start();
   }
@@ -38,10 +38,7 @@ class ConsoleAudio {
 export function useAudio(Hz) {
   const audioRef = useRef();
   if (!audioRef.current) {
-      audioRef.current = new ConsoleAudio(Hz);
+    audioRef.current = new ConsoleAudio(Hz);
   }
   return audioRef.current;
 }
-
-
-

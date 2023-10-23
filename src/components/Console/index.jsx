@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { useAudio } from "../audio/audioSetup";
-import { HzDisplay } from "./HzDisplay";
-import { Screen } from "./Screen";
-import { WaveBtn } from "./WaveBtn";
-import { Toggle } from "./Toggle";
-import { midiSetup } from "../audio/midiSetup";
+import { useAudio } from "../../audio/audioSetup";
+import { midiSetup } from "../../audio/midiSetup";
+import { HzDisplay } from "../HzDisplay/index";
+import { Screen } from "../Screen/index";
+import { WaveBtn } from "../WaveBtn/index";
+import { Toggle } from "../Toggle/index";
+import styles from "./index.module.css";
 
 export function Console() {
   const screenWidth = 512; // Power of 2 for PCM resolution that's nice for FFT
   const screenHeight = 512;
-  const BASE_HZ = 110;  // A2
+  const BASE_HZ = 110; // A2
 
   const consoleAudio = useAudio(BASE_HZ);
 
@@ -44,12 +45,14 @@ export function Console() {
           .map((_, i) => Math.sin((2 * Math.PI * i) / numSamps));
         break;
       case "square":
-        newPCM = new Float32Array(numSamps).fill().map((_, i) =>
-          (i < numSamps / 2) ? 1 : -1);
+        newPCM = new Float32Array(numSamps)
+          .fill()
+          .map((_, i) => (i < numSamps / 2 ? 1 : -1));
         break;
       case "sawtooth":
-        newPCM = new Float32Array(numSamps).fill().map((_, i) => 
-          1 * (1 - i / numSamps) + (-1) * i/numSamps);
+        newPCM = new Float32Array(numSamps)
+          .fill()
+          .map((_, i) => 1 * (1 - i / numSamps) + (-1 * i) / numSamps);
         break;
       case "line":
         newPCM = new Float32Array(numSamps).fill(0);
@@ -61,18 +64,15 @@ export function Console() {
 
   useEffect(() => {
     midiSetup(handleChangeHz);
-  },[]);
+  }, []);
 
   return (
-    <div id="console">
-      <div id="hz-area">
-        <HzDisplay
-          Hz={Hz}
-          onChangeHz={handleChangeHz}
-        ></HzDisplay>
+    <div id={styles.console}>
+      <div id={styles.hz_area}>
+        <HzDisplay Hz={Hz} onChangeHz={handleChangeHz}></HzDisplay>
       </div>
 
-      <div id="middle-console">
+      <div id={styles.middle_console}>
         <Screen
           width={screenWidth}
           height={screenHeight}
@@ -80,7 +80,7 @@ export function Console() {
           onPCMChange={handlePCMChange}
           displayPCM={displayPCM}
         />
-        <div id="wave-buttons">
+        <div id={styles.wave_buttons}>
           <WaveBtn
             shape="sine"
             onClick={() => handleWaveBtnClick("sine")}
@@ -99,8 +99,8 @@ export function Console() {
           ></WaveBtn>
         </div>
       </div>
-      
-      <div id="toggle-area">
+
+      <div id={styles.toggle_area}>
         <Toggle isPressed={displayPCM} onToggle={handleToggle}></Toggle>
       </div>
     </div>
