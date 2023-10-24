@@ -66,8 +66,17 @@ export function Console() {
     midiSetup(handleChangeHz);
   }, []);
 
+  // Prevent dragging and highlighting elements outside of the canvas
+  function preventMouseEvent(event) {
+    event.preventDefault();
+  }
+
   return (
-    <div id={styles.console}>
+    <div 
+      id={styles.console} 
+      onMouseMove={preventMouseEvent} 
+      onMouseDown={preventMouseEvent}
+    >
       <div id={styles.hz_area}>
         <HzDisplay Hz={Hz} onChangeHz={handleChangeHz}></HzDisplay>
       </div>
