@@ -11,7 +11,7 @@ export function midiSetup(onChangeHz) {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
   } catch {
     alert(
-      "This browser doesn't support MIDI.  If you would like to use MIDI with this app, please use a different browser like Firefox or Chrome."
+      "This browser doesn't support MIDI.  If you would like to use a MIDI keyboard with this app, please use a different browser like Firefox or Chrome."
     );
   }
   changeConsoleHz = onChangeHz;

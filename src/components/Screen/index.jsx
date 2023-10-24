@@ -33,7 +33,6 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   const [lastPoint, setLastPoint] = useState([0, screenWave[0]]);
 
   function handleMouseDown({ nativeEvent }) {
-    console.log(nativeEvent);
     setLastPoint([nativeEvent.offsetX, nativeEvent.offsetY]);
     setIsDrawing(true);
   }
@@ -42,8 +41,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     setIsDrawing(false);
   }
 
-  function handleMouseEnter({ nativeEvent }) {
-    console.log(nativeEvent);
+  function handleMouseOver({ nativeEvent }) {
     if (nativeEvent.buttons === 1) {
       handleMouseDown({ nativeEvent });
     }
@@ -209,7 +207,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseUp}
-      // onMouseEnter={handleMouseEnter}
+      onMouseOver={handleMouseOver}
     />
   );
 }
