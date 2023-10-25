@@ -44,6 +44,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
 
   function handleMouseUp() {
     setIsDrawing(false);
+
+    const [real, imag] = computeSpectrum(currentPCM);
+    setPitchWave(createPitchWave(real, imag));
   }
 
   function handleMouseOver({ nativeEvent }) {
@@ -83,9 +86,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
 
       const [real, imag] = computeSpectrum(newPCM);
 
-      setPitchWave(createPitchWave(real, imag))
       setScreenOvertones(fitScreenOvertones(real, imag, width / SCREEN_OVERTONE_WIDTH));
       setScreenWave(newScreenWave);
+
     } else {
       const newScreenOvertones = screenOvertones.slice();
 
@@ -108,8 +111,6 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
         imag[i + 1] = overtones[i];
       }
 
-      setPitchWave(createPitchWave(real, imag)) 
-
       // computePCM calls the FFT transform which modifies real/imag in place
       // so this call needs to come after setPitchWave
       newPCM = computePCM(real, imag);
@@ -130,15 +131,17 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     if (displayPCM) {
       console.log(pitchWave)
 
-      // Draw pitchWave (underneath screenWave)
-      ctx.strokeStyle = NEON_PINK;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, pitchWave[0]);
-      for (let i = 0; i < pitchWave.length - 1; i++) {
-        ctx.lineTo(i + 1, pitchWave[i + 1]);
+      if (!isDrawing){
+        // Draw pitchWave (underneath screenWave)
+        ctx.strokeStyle = NEON_PINK;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, pitchWave[0]);
+        for (let i = 0; i < pitchWave.length - 1; i++) {
+          ctx.lineTo(i + 1, pitchWave[i + 1]);
+        }
+        ctx.stroke();
       }
-      ctx.stroke();
 
       // Draw screenWave
       ctx.strokeStyle = NEON_BLUE;
