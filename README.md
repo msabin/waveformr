@@ -2,56 +2,48 @@
 
 <img src="/screencaps/drawing-demo1.gif" width="350">
 
-waveformr is an **in progress** project for visually sculpting your own fundamental waveform!  
+waveformr is a GUI for visually sculpting your own fundamental waveform!  
 
-Draw a waveform in either the time domain or in the frequency domain and use waveformr as an Oscillator to feed into another application (like a subtractive synth), play melodies at will with a MIDI controller, or sound design the exact tone you're looking for.
+**Play with the app [here](https://msabin.github.io/waveformr/)!!**
 
-This project uses the [p5.js](https://p5js.org/) library for interacting with and displaying the canvas, the Web Audio and Web MIDI APIs to deal with sound and connecting to MIDI controllers, and a barebones [JavaScript implementation](https://www.nayuki.io/page/free-small-fft-in-multiple-languages) of the Fourier transform.
+Draw a waveform in either the time domain or in the frequency domain and use waveformr as an Oscillator to play melodies with a MIDI controller, sound design the exact tone you're looking for, or experientially learn how sound in the time domain relates to sound in the frequency domain.
 
-A React-built GUI wrapper for interacting with waveformr with extended functionality is under construction and coming soon!
+This project was built using the React framework for JavaScript, the Web Audio and Web MIDI APIs to deal with sound and connecting to MIDI controllers, and a barebones [JavaScript implementation](https://www.nayuki.io/page/free-small-fft-in-multiple-languages) of the Fourier transform.
 
 
 
 <!-- <img src="/screencaps/drawing-demo2.gif" width="350"> -->
 
+## Usage
 
+- Plug and play with a MIDI keyboard! (Safari does not support MIDI)
+- Draw on the screen with your mouse to draw a waveform
+- Use the buttons with pictures of different waves on them to fill the waveform in with presets
+- Change the pitch by semi-tones with the arrow buttons on the GUI, type in the Hz display box to change the pitch to your desired Hz, or play the waveform with a MIDI keyboard to pitch the wave at will
+- Toggle between time domain and frequency domain for two methods of shaping a waveform that sync with each other
 
 
 ## Installation
-This project will soon be hosted at a domain to link to and play with in the browser but, for now, you can clone the repository here and run it yourself locally.
+Visit [here](https://msabin.github.io/waveformr/) to play with the app in a browser immediately and you can use the browser's developer tools to explore and modify the transpiled *deployment version* of the code!
 
-These installation instructions should work for MacOS with the default shell:
+To download, explore, and modify the *source/development version* code yourself, these installation instructions should work for MacOS with the default shell:
 
 Open a directory on your computer that you want to download this repository to and clone it from GitHub from the command line with
 
 `git clone https://github.com/msabin/waveformr.git`
 
-Feel free to use your own local build environment if wanted, but a simple way to run a local server if you have Python is to go to waveformr's directory and run
+If you don't have `npm` already installed (the package manager for JavaScript libraries) that should be [done first](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).  Then, in the directory that you cloned this repo to, run
 
-`python3 -m http.server`
+`npm install`
 
-Put the link of the port that the Python module opened (e.g. `http://localhost:8000/`) in your browser and play with waveformr!
+This will install all the dependencies for the project and a new folder called `node-modules` should appear in your directory.  Lastly run
 
+`npm run dev`
 
-## Usage
+This should use [Vite](https://vitejs.dev/guide/) to run a local server on your machine to host the application.  The terminal should have a line that looks something like:
 
-- Plug and play with a MIDI keyboard!
-- Draw on the screen with your mouse to draw a waveform
-- Press `F` to flip betweem time domain and frequency domain
-- Press `R` to reset the wave to silence
-- Press left and right arrows to change pitch down and up by a semitone
+`Local:   http://localhost:5173/waveformr`
 
-## TO-DO
+The number may be different but if you put the link it gives you in your browser of choice (note: Safari does not support MIDI), you should see the application running.
 
-### In Progress
-
-1. Build a GUI around the canvas with the React framework
-  - Hz and volume sliders
-  - Buttons to flip between time and frequency domains, mute, and reset
-2. Make the drawing smoother and fix snapping between points
-3. Host the application on a server
-
-### Next Up
-- Allow importing and exporting `.wav` files (drag-and-drop file onto canvas)
-- Connect it to other apps as a real-time usable Oscillator (starting with [rhythmonics](https://github.com/msabin/rhythmonics))
-- Make everything pretty to see and smooth to use
+With Vite, changes you make to the code will be immediately reflected on your browser page.
