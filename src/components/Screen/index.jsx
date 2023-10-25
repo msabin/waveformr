@@ -182,12 +182,12 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   
 
   function createPitchWave(real, imag) {
-    const SAMP_RATE = width;
+    const sampRate = 22050;
     console.log("here")
-    let realPitch = new Float32Array(SAMP_RATE).fill(0);
+    let realPitch = new Float32Array(sampRate).fill(0);
     let imagPitch = realPitch.slice();
 
-    const scale = Hz / 110;//baseHz;
+    const scale = (Hz / 110) * (sampRate/width);//baseHz;
     for (let i = 0; i < real.length; i++) {
       let index = Math.floor(scale * i);
 
