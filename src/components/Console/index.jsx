@@ -67,16 +67,15 @@ export function Console() {
   }, []);
 
   // Prevent dragging and highlighting elements outside of the canvas
-  function preventMouseEvent(event) {
-    event.preventDefault();
+  function handleMouseDown(event) {
+    if(event.target.id !== "hz-display") {
+      event.preventDefault();
+      document.getElementById("hz-display").blur();
+    }
   }
 
   return (
-    <div 
-      id={styles.console} 
-      onMouseMove={preventMouseEvent} 
-      onMouseDown={preventMouseEvent}
-    >
+    <div id={styles.console} onMouseDown={handleMouseDown}>
       <div id={styles.hz_area}>
         <HzDisplay Hz={Hz} onChangeHz={handleChangeHz}></HzDisplay>
       </div>
@@ -88,6 +87,7 @@ export function Console() {
           pcm={pcm}
           onPCMChange={handlePCMChange}
           displayPCM={displayPCM}
+          Hz={Hz}
         />
         <div id={styles.wave_buttons}>
           <WaveBtn

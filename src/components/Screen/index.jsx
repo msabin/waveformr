@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { transform, inverseTransform } from "../../audio/fft";
 import styles from "./index.module.css";
 
-export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
+export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   const NEON_PINK = "rgb(255 16 240)";
   const NEON_BLUE = "rgb(4 217 255)";
   const SCREEN_OVERTONE_WIDTH = 8;
@@ -12,6 +12,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   const [screenWave, setScreenWave] = useState(fitScreenPCM(pcm));
   const [screenOvertones, setScreenOvertones] = useState(
     fitScreenOvertones(computeOvertones(pcm, width / SCREEN_OVERTONE_WIDTH))
+  );
+  const [pitchWave, setPitchWave] = useState(
+    createPitchWave(computeOvertones(pcm, width / SCREEN_OVERTONE_WIDTH))
   );
 
   const [currentPCM, setCurrentPCM] = useState(pcm);
@@ -23,9 +26,11 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   // currentPCM and we should thus update our state to match the new pcm
   if (pcm != currentPCM) {
     setScreenWave(fitScreenPCM(pcm));
-    setScreenOvertones(
-      fitScreenOvertones(computeOvertones(pcm, width / SCREEN_OVERTONE_WIDTH))
-    );
+
+    const overtones = computeOvertones(pcm, width / SCREEN_OVERTONE_WIDTH);
+    setScreenOvertones(fitScreenOvertones(overtones));
+    setPitchWave(createPitchWave(overtones));
+
     setCurrentPCM(pcm);
   }
 
@@ -76,11 +81,10 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
       newPCM = normalizeWave(newScreenWave);
 
-      setScreenOvertones(
-        fitScreenOvertones(
-          computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH)
-        )
-      );
+      const overtones = computeOvertones(newPCM, width / SCREEN_OVERTONE_WIDTH);
+
+      setPitchWave(createPitchWave(overtones))
+      setScreenOvertones(fitScreenOvertones(overtones));
       setScreenWave(newScreenWave);
     } else {
       const newScreenOvertones = screenOvertones.slice();
@@ -98,6 +102,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
       const overtones = normalizeOvertones(newScreenOvertones);
       newPCM = computePCM(overtones);
+      setPitchWave(createPitchWave(overtones))
 
       setScreenWave(fitScreenPCM(newPCM));
       setScreenOvertones(newScreenOvertones);
@@ -118,6 +123,16 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
       ctx.moveTo(0, screenWave[0]);
       for (let i = 0; i < screenWave.length - 1; i++) {
         ctx.lineTo(i + 1, screenWave[i + 1]);
+      }
+      ctx.stroke();
+
+      console.log(pitchWave)
+
+      ctx.strokeStyle = NEON_PINK;
+      ctx.beginPath();
+      ctx.moveTo(0, pitchWave[0]);
+      for (let i = 0; i < pitchWave.length - 1; i++) {
+        ctx.lineTo(i + 1, pitchWave[i + 1]);
       }
       ctx.stroke();
     } else {
@@ -143,12 +158,37 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
     transform(real, imag);
 
     let overtones = real.slice(1, numOvertones + 1);
-    overtones = overtones.map(function (x, i) {
-      return Math.sqrt(x ** 2 + imag[i + 1] ** 2);
-    });
+    overtones = overtones.map((x, i) => Math.sqrt(x ** 2 + imag[i + 1] ** 2));
 
     return overtones;
   }
+  
+
+  function createPitchWave(overtones) {
+    const SAMP_RATE = width;
+    console.log("here")
+    let realPitch = new Float32Array(SAMP_RATE).fill(0);
+    let imagPitch = realPitch.slice();
+
+    const scale = 330 / 110;//baseHz;
+    for (let i = 0; i < overtones.length; i++) {
+      let index = Math.floor(scale * (i + 1));
+
+      if (index <= imagPitch.length / 2) {
+        imagPitch[index] = overtones[i];
+      }
+    }
+
+    inverseTransform(realPitch, imagPitch);
+
+    const pitchWave = realPitch.slice(0, width);
+
+    const maxHeight = Math.max(...pitchWave);
+    return pitchWave.map(
+      (x) => (x / (6 * maxHeight)) * (height / 2) + height / 2
+    );
+  }
+
 
   function computePCM(overtones) {
     const real = new Float32Array(width).fill(0);
@@ -164,15 +204,11 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
   }
 
   function normalizeWave(screenWave) {
-    return screenWave.map(function (x) {
-      return -(x - height / 2) / (height / 2);
-    });
+    return screenWave.map((x) => -(x - height / 2) / (height / 2));
   }
 
   function normalizeOvertones(screenOvertones) {
-    return screenOvertones.map(function (x) {
-      return (height - x) / height;
-    });
+    return screenOvertones.map((x) => (height - x) / height);
   }
 
   function fitScreenPCM(pcmWave) {
@@ -181,9 +217,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
     const screenScale = 2 / 3;
 
-    return pcmWave.map(function (x) {
-      return screenScale * (x / maxHeight) * (-height / 2) + height / 2;
-    });
+    return pcmWave.map(
+      (x) => screenScale * (x / maxHeight) * (-height / 2) + height / 2
+    );
   }
 
   function fitScreenOvertones(overtones) {
@@ -192,9 +228,9 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
     const screenScale = 2 / 3;
 
-    return overtones.map(function (x) {
-      return height - (x / maxOvertone) * height * screenScale;
-    });
+    return overtones.map(
+      (x) => height - (x / maxOvertone) * height * screenScale
+    );
   }
 
   return (
