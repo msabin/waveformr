@@ -58,6 +58,7 @@ export function HzDisplay({ Hz, onChangeHz }) {
       ></button>
 
       <p
+        id="hz-display"
         className="digital-display"
         contentEditable={true}
         suppressContentEditableWarning={true}
