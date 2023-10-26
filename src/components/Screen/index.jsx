@@ -25,8 +25,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   if (pcm != currentPCM) {
     setScreenWave(fitScreenPCM(pcm));
 
-    const [real, imag] = computeSpectrum(fitScreenPCM(pcm));
-    console.log(real, imag)
+    const [real, imag] = computeSpectrum(pcm);
     setScreenOvertones(fitScreenOvertones(real, imag, width / SCREEN_OVERTONE_WIDTH));
     setPitchWave(createPitchWave(real, imag));
 
@@ -44,7 +43,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   function handleMouseUp() {
     setIsDrawing(false);
 
-    const [real, imag] = computeSpectrum(pcm);
+    const [real, imag] = computeSpectrum(currentPCM);
     setPitchWave(createPitchWave(real, imag));
   }
 
@@ -189,7 +188,8 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     let realPitch = new Float32Array(sampRate).fill(0);
     let imagPitch = realPitch.slice();
 
-    const scale = (Hz / 110) * (sampRate/width);//baseHz;
+    const startingOctave = 2;
+    const scale = startingOctave  * (Hz / 110) * (sampRate/width);//baseHz;
     for (let i = 0; i < real.length; i++) {
       let index = Math.floor(scale * i);
 
@@ -208,16 +208,13 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     }
 
     inverseTransform(realPitch, imagPitch);
-    console.log(realPitch)
 
-    const pitchWave = realPitch.slice(0, width).map((x) => x/width);
-    console.log(pitchWave)
-    return pitchWave
+    const pitchWave = realPitch.slice(0, width);
 
-    let maxHeight = 1 //Math.max(...pitchWave.map((x) => Math.abs(x)));
-    // maxHeight = maxHeight === 0 ? 1 : maxHeight;
+    let maxHeight = Math.max(...pitchWave.map((x) => Math.abs(x)));
+    maxHeight = maxHeight === 0 ? 1 : maxHeight;
 
-    const screenScale = 1 // 2/3;
+    const screenScale = 2/3;
 
     return pitchWave.map(
       (x) => screenScale * (x / maxHeight) * (-height / 2) + height / 2
