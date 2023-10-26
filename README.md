@@ -1,6 +1,6 @@
 # waveformr
 
-<img src="/screencaps/drawing-demo.gif" width="350">
+<img src="/screencaps/drawing-demo.gif" width="450">
 
 waveformr is a GUI for visually sculpting your own fundamental waveform!  
 
