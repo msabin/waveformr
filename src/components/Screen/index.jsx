@@ -13,9 +13,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   const [screenOvertones, setScreenOvertones] = useState(
     fitScreenOvertones(...computeSpectrum(pcm), width / SCREEN_OVERTONE_WIDTH)
   );
-  const [pitchWave, setPitchWave] = useState(
-    createPitchWave(...computeSpectrum(pcm))
-  );
+  const [pitchWave, setPitchWave] = useState(new Float32Array(width).fill(0));
 
   const [currentPCM, setCurrentPCM] = useState(pcm);
 
@@ -27,7 +25,8 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   if (pcm != currentPCM) {
     setScreenWave(fitScreenPCM(pcm));
 
-    const [real, imag] = computeSpectrum(pcm);
+    const [real, imag] = computeSpectrum(fitScreenPCM(pcm));
+    console.log(real, imag)
     setScreenOvertones(fitScreenOvertones(real, imag, width / SCREEN_OVERTONE_WIDTH));
     setPitchWave(createPitchWave(real, imag));
 
@@ -45,7 +44,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   function handleMouseUp() {
     setIsDrawing(false);
 
-    const [real, imag] = computeSpectrum(currentPCM);
+    const [real, imag] = computeSpectrum(pcm);
     setPitchWave(createPitchWave(real, imag));
   }
 
@@ -85,7 +84,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
       newPCM = normalizeWave(newScreenWave);
 
       const [real, imag] = computeSpectrum(newPCM);
-
+      
       setScreenOvertones(fitScreenOvertones(real, imag, width / SCREEN_OVERTONE_WIDTH));
       setScreenWave(newScreenWave);
 
@@ -129,7 +128,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     ctx.lineWidth = 2;
 
     if (displayPCM) {
-      console.log(pitchWave)
+      // console.log(pitchWave)
 
       if (!isDrawing){
         // Draw pitchWave (underneath screenWave)
@@ -197,17 +196,28 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
       if (index <= realPitch.length / 2) {
         realPitch[index] = real[i];
         imagPitch[index] = imag[i];
+
+        // if (index >= 880 && index <= 1000){
+        //   let jitter = (1 - 2 * Math.random()) * 1;
+        //   realPitch[index] += jitter;
+
+        //   jitter = (1 - 2 * Math.random()) * 1;
+        //   imagPitch[index] += jitter;
+        // }
       }
     }
 
     inverseTransform(realPitch, imagPitch);
+    console.log(realPitch)
 
-    const pitchWave = realPitch.slice(0, width);
+    const pitchWave = realPitch.slice(0, width).map((x) => x/width);
+    console.log(pitchWave)
+    return pitchWave
 
-    let maxHeight = Math.max(...pitchWave);
-    maxHeight = maxHeight === 0 ? 1 : maxHeight;
+    let maxHeight = 1 //Math.max(...pitchWave.map((x) => Math.abs(x)));
+    // maxHeight = maxHeight === 0 ? 1 : maxHeight;
 
-    const screenScale = 1/6;
+    const screenScale = 1 // 2/3;
 
     return pitchWave.map(
       (x) => screenScale * (x / maxHeight) * (-height / 2) + height / 2
