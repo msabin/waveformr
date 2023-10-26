@@ -11,6 +11,7 @@ export function Console() {
   const screenWidth = 512; // Power of 2 for PCM resolution that's nice for FFT
   const screenHeight = 512;
   const BASE_HZ = 110; // A2
+  const SEMITONE_FACTOR = 2 ** (1 / 12);
 
   const consoleAudio = useAudio(BASE_HZ);
 
@@ -64,15 +65,82 @@ export function Console() {
 
   useEffect(() => {
     midiSetup(handleChangeHz);
+
+    function handleKeyDown(e) {
+      if(e.target.id !== "hz-display") {
+        switch (e.key) {
+          case 'Enter': 
+            setDisplayPCM((prevDisplayPCM) => !prevDisplayPCM);
+            return;
+
+          case 'ArrowLeft':
+            handleChangeHz(Hz / SEMITONE_FACTOR);
+            return;
+          
+          case 'ArrowRight':
+            handleChangeHz(Hz * SEMITONE_FACTOR);
+            return;
+        }
+        switch (e.code) {
+          case 'KeyA':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 9);
+            return;
+          case 'KeyW':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 8);
+            return;
+          case 'KeyS':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 7);
+            return;
+          case 'KeyE':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 6);
+            return;
+          case 'KeyD':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 5);
+            return;
+          case 'KeyF':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 4);
+            return;
+          case 'KeyT':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 3);
+            return;
+          case 'KeyG':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 2);
+            return;
+          case 'KeyY':
+            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 1);
+            return;
+          case 'KeyH':
+            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 0);
+            return;
+          case 'KeyU':
+            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 1);
+            return;
+          case 'KeyJ':
+            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 2);
+            return;
+          case 'KeyK':
+            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 3);
+            return;
+            
+        }   
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
   }, []);
 
   // Prevent dragging and highlighting elements outside of the canvas
-  function handleMouseDown(event) {
-    if(event.target.id !== "hz-display") {
-      event.preventDefault();
+  function handleMouseDown(e) {
+    if(e.target.id !== "hz-display") {
+      e.preventDefault();
       document.getElementById("hz-display").blur();
     }
   }
+
 
   const consoleShadows = {
     boxShadow: displayPCM
