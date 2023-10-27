@@ -4,14 +4,32 @@ import { transform } from "./fft.js";
 class ConsoleAudio {
   constructor(Hz) {
     this.context = new AudioContext();
+
     this.osc = this.context.createOscillator();
-
-    this.osc.connect(this.context.destination);
-
     this.osc.frequency.setValueAtTime(Hz, this.context.currentTime);
     this.osc.setPeriodicWave(this.context.createPeriodicWave([0, 0], [0, 0]));
-
     this.osc.start();
+
+    this.currentVol = .25;
+    this.vol = this.context.createGain();
+    this.vol.gain.setValueAtTime(this.currentVol, this.context.currentTime);
+
+    this.osc.connect(this.vol);
+    this.vol.connect(this.context.destination);
+  }
+
+  setVol(vol) {
+    this.currentVol = vol;
+    this.vol.gain.setValueAtTime(this.currentVol, this.context.currentTime);
+  }
+
+  muteToggle() {
+    if (this.vol.gain.value > 0) {
+      this.vol.gain.setValueAtTime(0, this.context.currentTime);
+    }
+    else {
+      this.vol.gain.setValueAtTime(this.currentVol, this.context.currentTime);
+    }
   }
 
   setHz(Hz) {

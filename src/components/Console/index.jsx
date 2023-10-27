@@ -73,56 +73,45 @@ export function Console() {
             setDisplayPCM((prevDisplayPCM) => !prevDisplayPCM);
             return;
 
-          case 'ArrowLeft':
-            handleChangeHz(Hz / SEMITONE_FACTOR);
-            return;
+          // case 'ArrowLeft':
+          //   handleChangeHz(Hz / SEMITONE_FACTOR);
+          //   return;
           
-          case 'ArrowRight':
-            handleChangeHz(Hz * SEMITONE_FACTOR);
+          // case 'ArrowRight':
+          //   handleChangeHz(Hz * SEMITONE_FACTOR);
+          //   return;
+          case '1':
+            handleWaveBtnClick('sine');
+            return;
+          case '2':
+            handleWaveBtnClick('square');
+            return;
+          case '3':
+            handleWaveBtnClick('sawtooth');
+            return;
+          case '4':
+            handleWaveBtnClick('line');
+            return;
+          case 'm':
+            consoleAudio.muteToggle();
+            return;
+          case '=':
+          case '+':
+            consoleAudio.setVol(consoleAudio.currentVol + .1);
+            return;
+          case '-':
+            consoleAudio.setVol(consoleAudio.currentVol - .1);
             return;
         }
-        switch (e.code) {
-          case 'KeyA':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 9);
-            return;
-          case 'KeyW':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 8);
-            return;
-          case 'KeyS':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 7);
-            return;
-          case 'KeyE':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 6);
-            return;
-          case 'KeyD':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 5);
-            return;
-          case 'KeyF':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 4);
-            return;
-          case 'KeyT':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 3);
-            return;
-          case 'KeyG':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 2);
-            return;
-          case 'KeyY':
-            handleChangeHz(BASE_HZ / SEMITONE_FACTOR ** 1);
-            return;
-          case 'KeyH':
-            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 0);
-            return;
-          case 'KeyU':
-            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 1);
-            return;
-          case 'KeyJ':
-            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 2);
-            return;
-          case 'KeyK':
-            handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** 3);
-            return;
-            
-        }   
+
+        const keyboard = ['a', 'w', 's', 'e', 'd', 'f', 
+          't', 'g', 'y', 'h', 'u', 'j', 'k']
+
+        // Center power around 'h', our key for note A
+        const power = keyboard.indexOf(e.key) - 9
+        if (power !== -10) {
+          handleChangeHz(BASE_HZ * SEMITONE_FACTOR ** power);
+        }
       }
     }
 

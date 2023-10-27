@@ -19,7 +19,7 @@ export function HzDisplay({ Hz, onChangeHz }) {
     onChangeHz(parseFloat(newHz));
   }
 
-  function handleItemKeyDown(e) {
+  function handleKeyDown(e) {
     if (e.key === "Enter") {
       e.preventDefault();
       e.currentTarget.blur();
@@ -63,7 +63,7 @@ export function HzDisplay({ Hz, onChangeHz }) {
         contentEditable={true}
         suppressContentEditableWarning={true}
         onBlur={(e) => handleBlur(e)}
-        onKeyDown={(e) => handleItemKeyDown(e)}
+        onKeyDown={(e) => handleKeyDown(e)}
         onInput={(e) => handleInput(e)}
         style={{ width: "7em" }}
       >
