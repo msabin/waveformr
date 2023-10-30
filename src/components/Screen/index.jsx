@@ -183,7 +183,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
 
   const drawRef = useRef();
   drawRef.current = draw;
-  
+
 
   useEffect(() => {
     const jitters = new Array(JITTER_FRAMES);
@@ -304,7 +304,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
 
     inverseTransform(real, imag);
 
-    return real;
+    return real.map((x) => -x);
   }
 
   function normalizeWave(screenWave) {
