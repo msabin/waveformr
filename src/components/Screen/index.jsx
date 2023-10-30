@@ -6,7 +6,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   const NEON_PINK = "rgb(255 16 240)";
   const NEON_BLUE = "rgb(4 217 255)";
   const SCREEN_OVERTONE_WIDTH = 8;
-  const JITTER_FRAMES = 10
+  const JITTER_FRAMES = 14
 
   const canvasRef = useRef(null);
 
@@ -124,12 +124,13 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     onPCMChange(newPCM);
   }
 
-  function draw(ctx, frame) {
+  function draw(ctx) {
     
     ctx.fillRect(0, 0, width, height);
     ctx.lineWidth = 2;
 
     if (displayPCM) {
+      let frame = Math.floor(Math.random() * JITTER_FRAMES);
       const pitchWave = pitchWaves[frame];
 
       if (!isDrawing){
@@ -143,10 +144,22 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
         }
         ctx.stroke();
       }
+      else {
+        const flatJitter = jitters[frame]
+
+        ctx.strokeStyle = NEON_PINK;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, flatJitter[0] + height/2);
+        for (let i = 0; i < flatJitter.length - 1; i++) {
+          ctx.lineTo(i + 1, flatJitter[i + 1] + height/2);
+        }
+        ctx.stroke();
+      }
 
       // Draw screenWave
       ctx.strokeStyle = NEON_BLUE;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(0, screenWave[0]);
       for (let i = 0; i < screenWave.length - 1; i++) {
@@ -170,61 +183,58 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
 
   const drawRef = useRef();
   drawRef.current = draw;
-
-  // useEffect(() => {
-  //   draw(canvasRef.current.getContext("2d"), 0);
-  // });
+  
 
   useEffect(() => {
     const jitters = new Array(JITTER_FRAMES);
     for(let i = 0; i < jitters.length; i++){
 
-      for (let j = 0; j < 2; j++) {
-        (1 - 2 * Math.random()) * 1;
-      }
+      let jitterScale = Math.random() * 2//(i+1)/jitters.length
+
       let highFreq1 = 10
-      let amp1 = (1 - 2 * Math.random()) * 5;
+      let amp1 = (1 - 2 * Math.random()) * 10 * jitterScale;
+      let offset1 = (1 - 2 * Math.random()) * Math.PI
 
       let highFreq2 = 20
-      let amp2 = (1 - 2 * Math.random()) * 5;
+      let amp2 = (1 - 2 * Math.random()) * 5 * jitterScale;
+      let offset2 = (1 - 2 * Math.random()) * Math.PI
 
       let highFreq3 = 40
-      let amp3 = (1 - 2 * Math.random()) * 10;
+      let amp3 = (1 - 2 * Math.random()) * 5 * jitterScale;
+      let offset3 = (1 - 2 * Math.random()) * Math.PI
 
       let highFreq4 = 80
-      let amp4 = (1 - 2 * Math.random()) * 10;
+      let amp4 = (1 - 2 * Math.random()) * 4 * jitterScale;
+      let offset4 = (1 - 2 * Math.random()) * Math.PI
 
       let highFreq5 = 100
-      let amp5 = (1 - 2 * Math.random()) * 10;
+      let amp5 = (1 - 2 * Math.random()) * 2 * jitterScale;
+      let offset5 = (1 - 2 * Math.random()) * Math.PI
 
       jitters[i] = new Float32Array(width)
         .fill()
         .map((_, i) => 
-          amp1* Math.sin(highFreq1 * (2 * Math.PI * i) / width) +
-          amp2* Math.sin(highFreq2 * (2 * Math.PI * i) / width) +
-          amp3* Math.sin(highFreq3 * (2 * Math.PI * i) / width) +
-          amp4* Math.sin(highFreq4 * (2 * Math.PI * i) / width) +
-          amp5* Math.sin(highFreq5 * (2 * Math.PI * i) / width)
+          amp1* Math.sin(highFreq1 * (2 * Math.PI * i / width + offset1)) +
+          amp2* Math.sin(highFreq2 * (2 * Math.PI * i / width + offset2)) +
+          amp3* Math.sin(highFreq3 * (2 * Math.PI * i / width + offset3)) +
+          amp4* Math.sin(highFreq4 * (2 * Math.PI * i / width + offset4)) +
+          amp5* Math.sin(highFreq5 * (2 * Math.PI * i / width + offset5))
         );
     }
     setJitters(jitters);
 
 
-    const frameRate = 14; // 24 frames per second
+    const frameRate = 14; // 14 frames per second
     const frameInterval = 1000 / frameRate;
 
     let lastFrameTime = 0;
-    let frame = 0;
 
     function jitterAnimate(timestamp) {
       if (timestamp - lastFrameTime >= frameInterval) {
-
-
         draw = drawRef.current;
         // Draw your content
-        draw(canvasRef.current.getContext("2d"), frame)
+        draw(canvasRef.current.getContext("2d"))
 
-        frame = (frame + 1) % JITTER_FRAMES;
         lastFrameTime = timestamp;
       }
 
@@ -286,58 +296,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     }
 
 
-    // for (let i = 0; i < numWaves; i++){
-    //   let real = realPitch.slice();
-    //   let imag = imagPitch.slice();
-
-    //   let jitter = (1 - 2 * Math.random()) * 1;
-    //   real[Hz*25] += jitter;
-
-    //   jitter = (1 - 2 * Math.random()) * 1;
-    //   real[Hz*50] += jitter;
-
-
-
-    //   jitter = (1 - 2 * Math.random()) * 1;
-    //   imag[Hz*20] += jitter;
-
-    //   jitter = (1 - 2 * Math.random()) * 1;
-    //   imag[Hz*45] += jitter;
-
-    //   jitter = (1 - 2 * Math.random()) * 2;
-    //   imag[Hz*100] += jitter;
-
-    //   jitter = (1 - 2 * Math.random()) * 5;
-    //   imag[Hz*125] += jitter;
-
-    //   inverseTransform(real, imag)
-
-    //   let pitchWave = real.slice(0, width);
-
-    //   let maxHeight = Math.max(...pitchWave.map((x) => Math.abs(x)));
-    //   maxHeight = maxHeight === 0 ? 1 : maxHeight;
-  
-    //   const screenScale = 2/3;
-  
-    //   pitchWaves[i] = pitchWave.map(
-    //     (x) => screenScale * (x / maxHeight) * (-height / 2) + height / 2
-    //   );
-    // }
-
     return pitchWaves;
-
-    // inverseTransform(realPitch, imagPitch);
-
-    // const pitchWave = realPitch.slice(0, width);
-
-    // let maxHeight = Math.max(...pitchWave.map((x) => Math.abs(x)));
-    // maxHeight = maxHeight === 0 ? 1 : maxHeight;
-
-    // const screenScale = 2/3;
-
-    // return pitchWave.map(
-    //   (x) => screenScale * (x / maxHeight) * (-height / 2) + height / 2
-    // );
   }
 
 
