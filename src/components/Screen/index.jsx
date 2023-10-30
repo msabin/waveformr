@@ -160,7 +160,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM }) {
 
     inverseTransform(real, imag);
 
-    return real;
+    return real.map((x) => -x);
   }
 
   function normalizeWave(screenWave) {
