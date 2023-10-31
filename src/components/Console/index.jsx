@@ -154,6 +154,7 @@ export function Console() {
           pcm={pcm}
           onPCMChange={handlePCMChange}
           displayPCM={displayPCM}
+          Hz={Hz}
         />
         <div id={styles.wave_buttons}>
           <WaveBtn
