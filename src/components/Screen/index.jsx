@@ -194,7 +194,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
       const yOffset = 80;
 
 
-      ctx.fillStyle = "hsl(300 95% 75%)";
+      ctx.fillStyle = "hsl(177deg, 50%, 60%)";
       ctx.font = "48px VT323";
       ctx.fillText("Warning:", xOffset, yOffset);
 
