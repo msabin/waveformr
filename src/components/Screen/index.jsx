@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { transform, inverseTransform } from "../../audio/fft";
 import styles from "./index.module.css";
 
-export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
+export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted, onBoot }) {
   const NEON_PINK = "rgb(255 16 240)";
   const NEON_BLUE = "rgb(4 217 255)";
   const SCREEN_OVERTONE_WIDTH = 8;
@@ -20,7 +20,6 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   const [currentPCM, setCurrentPCM] = useState(pcm);
 
   const [reducedMotion, setReducedMotion] = useState(null);
-  const [booted, setBooted] = useState(false);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -28,23 +27,48 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
       switch (e.key) {
         case 'y': 
           setReducedMotion(true);
-          setBooted(true);
+          onBoot();
           document.removeEventListener('keydown', handleKeyDown);
           console.log('yes')
           return;
         case 'n':
           setReducedMotion(false);
-          setBooted(true);
+          onBoot();
           document.removeEventListener('keydown', handleKeyDown);
           console.log('no')
           return;
       }
     }
 
+    function handleMouseDown(e) {
+      console.log(e.offsetX)
+      console.log(e.offsetY)
+      if (e.offsetY >= 420 && e.offsetY <= 455) {
+        if (e.offsetX >= 220 && e.offsetX <= 260) {
+          setReducedMotion(true);
+          onBoot();
+          document.removeEventListener('keydown', handleKeyDown);
+          canvasRef.current.removeEventListener('mousedown', handleMouseDown);
+          console.log('yes')
+          return;
+        }
+        if (e.offsetX >= 264 && e.offsetX <= 286) {
+          setReducedMotion(false);
+          onBoot();
+          document.removeEventListener('keydown', handleKeyDown);
+          canvasRef.current.removeEventListener('mousedown', handleMouseDown);
+          console.log('no')
+          return;
+        }
+      }
+    }
+
     document.addEventListener('keydown', handleKeyDown);
+    canvasRef.current.addEventListener('mousedown', handleMouseDown);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      canvasRef.current.removeEventListener('mousedown', handleMouseDown);
     }
   },[]);
 
@@ -205,7 +229,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
         }
         ctx.stroke();
       }
-      else {
+      else if(!reducedMotion){
         const flatJitter = jitters[frame]
 
         ctx.strokeStyle = NEON_PINK;

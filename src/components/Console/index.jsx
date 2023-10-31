@@ -21,21 +21,31 @@ export function Console() {
 
   const [Hz, setHz] = useState(110);
 
+  const [booted, setBooted] = useState(false);
+
   function handlePCMChange(pcm) {
+    if (!booted) return;
+
     consoleAudio.setWave(pcm);
     setPCM(pcm);
   }
 
   function handleChangeHz(newHz) {
+    if (!booted) return;
+
     consoleAudio.setHz(newHz);
     setHz(newHz);
   }
 
   function handleToggle() {
+    if (!booted) return;
+
     setDisplayPCM(!displayPCM);
   }
 
   function handleWaveBtnClick(shape) {
+    if (!booted) return;
+
     const numSamps = pcm.length;
     let newPCM;
 
@@ -64,6 +74,8 @@ export function Console() {
   }
 
   useEffect(() => {
+    if (!booted) return;
+
     midiSetup(handleChangeHz);
 
     function handleKeyDown(e) {
@@ -120,7 +132,7 @@ export function Console() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     }
-  }, []);
+  }, [booted]);
 
   // Prevent dragging and highlighting elements outside of the canvas
   function handleMouseDown(e) {
@@ -144,7 +156,11 @@ export function Console() {
       style={consoleShadows}
     >
       <div id={styles.hz_area}>
-        <HzDisplay Hz={Hz} onChangeHz={handleChangeHz}></HzDisplay>
+        <HzDisplay 
+          Hz={Hz} 
+          onChangeHz={handleChangeHz} 
+          booted={booted}
+        ></HzDisplay>
       </div>
 
       <div id={styles.middle_console}>
@@ -155,6 +171,8 @@ export function Console() {
           onPCMChange={handlePCMChange}
           displayPCM={displayPCM}
           Hz={Hz}
+          booted={booted}
+          onBoot={() => setBooted(true)}
         />
         <div id={styles.wave_buttons}>
           <WaveBtn

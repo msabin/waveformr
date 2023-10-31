@@ -1,10 +1,12 @@
 import styles from "./index.module.css";
 
-export function HzDisplay({ Hz, onChangeHz }) {
+export function HzDisplay({ Hz, onChangeHz, booted }) {
   const SEMITONE_FACTOR = 2 ** (1 / 12);
   const MAX_CHARACTER_LIMIT = 8;
 
   function handleBlur(e) {
+    if (!booted) return;
+
     let newHz = e.currentTarget.textContent || "";
 
     // If the entered value is empty or not a number, keep old Hz
@@ -20,13 +22,17 @@ export function HzDisplay({ Hz, onChangeHz }) {
   }
 
   function handleKeyDown(e) {
+    if (!booted) return;
+
     if (e.key === "Enter") {
       e.preventDefault();
       e.currentTarget.blur();
     }
   }
 
-  const handleInput = (e) => {
+  function handleInput(e) {
+    if (!booted) return;
+
     const text = e.target.textContent || "";
 
     if (text.length > MAX_CHARACTER_LIMIT) {
@@ -60,7 +66,7 @@ export function HzDisplay({ Hz, onChangeHz }) {
       <p
         id="hz-display"
         className="digital-display"
-        contentEditable={true}
+        contentEditable={booted}
         suppressContentEditableWarning={true}
         onBlur={(e) => handleBlur(e)}
         onKeyDown={(e) => handleKeyDown(e)}
