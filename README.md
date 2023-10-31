@@ -16,14 +16,10 @@ This project was built using the React framework for JavaScript, the Web Audio a
 
 ## Usage
 
-- Plug and play with a MIDI keyboard! (Safari does not support MIDI)
-
-**OR**
-
-Use the keyboard as a piano (white keys are ASDF row, black keys are on QWERTY row):
-
--WE-TYU-
-
+- Plug and play with a MIDI keyboard! (Safari does not support MIDI)\
+**OR**\
+Use the keyboard as a piano (white keys are ASDF row, black keys are on QWERTY row):\
+-WE-TYU-\
 ASDFGHJK
 - Draw on the screen with your mouse to draw a waveform
 - M key: Mute the sound
