@@ -18,14 +18,14 @@ This project was built using the React framework for JavaScript, the Web Audio a
 
 - Plug and play with a MIDI keyboard! (Safari does not support MIDI)\
 **OR**\
-Use the keyboard as a piano (white keys are ASDF row, black keys are on QWERTY row):\
+Use the keyboard as a piano (black keys are on QWERTY row, white keys are ASDF row):\
 -WE-TYU-\
 ASDFGHJK
 - Draw on the screen with your mouse to draw a waveform
 - M key: Mute the sound
 - +/- keys: Incrementally increase/decrease the volume
 - 1/2/3/4 keys: Use the buttons with pictures of different waves on them to fill the waveform in with presets
-- Change the pitch by semi-tones with the arrow buttons on the GUI, type in the Hz display box to change the pitch to your desired Hz, or play the waveform with a MIDI keyboard to pitch the wave at will
+- Change the pitch by semi-tones with the arrow buttons on the GUI, type in the Hz display box to change the pitch to your desired Hz, or play the waveform with a the keyboard piano layout or a MIDI piano to pitch the wave at will
 - Enter key: Toggle between time domain and frequency domain for two methods of shaping a waveform that sync with each other
 
 
