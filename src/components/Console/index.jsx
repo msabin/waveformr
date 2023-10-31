@@ -74,9 +74,11 @@ export function Console() {
   }
 
   useEffect(() => {
-    if (!booted) return;
-
-    midiSetup(handleChangeHz);
+    if (!booted) {
+      midiSetup(handleChangeHz);
+      
+      return;
+    }
 
     function handleKeyDown(e) {
       if(e.target.id !== "hz-display") {

@@ -41,15 +41,12 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
     }
 
     function handleMouseDown(e) {
-      console.log(e.offsetX)
-      console.log(e.offsetY)
       if (e.offsetY >= 420 && e.offsetY <= 455) {
         if (e.offsetX >= 220 && e.offsetX <= 260) {
           setReducedMotion(true);
           onBoot();
           document.removeEventListener('keydown', handleKeyDown);
           canvasRef.current.removeEventListener('mousedown', handleMouseDown);
-          console.log('yes')
           return;
         }
         if (e.offsetX >= 264 && e.offsetX <= 286) {
@@ -57,7 +54,6 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
           onBoot();
           document.removeEventListener('keydown', handleKeyDown);
           canvasRef.current.removeEventListener('mousedown', handleMouseDown);
-          console.log('no')
           return;
         }
       }
@@ -346,7 +342,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
 
   function createPitchWaves(real, imag) {
     const sampRate = 22050;
-    console.log("here")
+
     let realPitch = new Float32Array(sampRate).fill(0);
     let imagPitch = realPitch.slice();
 
