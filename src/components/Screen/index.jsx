@@ -19,6 +19,35 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
 
   const [currentPCM, setCurrentPCM] = useState(pcm);
 
+  const [reducedMotion, setReducedMotion] = useState(null);
+  const [booted, setBooted] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      
+      switch (e.key) {
+        case 'y': 
+          setReducedMotion(true);
+          setBooted(true);
+          document.removeEventListener('keydown', handleKeyDown);
+          console.log('yes')
+          return;
+        case 'n':
+          setReducedMotion(false);
+          setBooted(true);
+          document.removeEventListener('keydown', handleKeyDown);
+          console.log('no')
+          return;
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  },[]);
+
   // pcm can be changed in this component by drawing on the Screen (in which
   // case we are in sync with currentPCM and our screenWave and screenOvertones
   // are holding state for what they should look like) or pcm is changed in some
@@ -38,95 +67,127 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
   const [lastPoint, setLastPoint] = useState([0, screenWave[0]]);
 
   function handleMouseDown({ nativeEvent }) {
-    setLastPoint([nativeEvent.offsetX, nativeEvent.offsetY]);
-    setIsDrawing(true);
+    if (booted) {
+      setLastPoint([nativeEvent.offsetX, nativeEvent.offsetY]);
+      setIsDrawing(true);
+    }
   }
 
   function handleMouseUp() {
-    setIsDrawing(false);
+    if (booted) {
+      setIsDrawing(false);
 
-    const [real, imag] = computeSpectrum(currentPCM);
-    setPitchWaves(createPitchWaves(real, imag));
+      const [real, imag] = computeSpectrum(currentPCM);
+      setPitchWaves(createPitchWaves(real, imag));
+    }
   }
 
   function handleMouseOver({ nativeEvent }) {
-    if (nativeEvent.buttons === 1) {
-      handleMouseDown({ nativeEvent });
+    if (booted) {
+      if (nativeEvent.buttons === 1) {
+        handleMouseDown({ nativeEvent });
+      }
     }
   }
 
   function handleMouseMove({ nativeEvent }) {
-    if (!isDrawing) return;
+    if (booted) {
+      if (!isDrawing) return;
 
-    const newX = Math.min(Math.max(0, nativeEvent.offsetX), width);
-    const newY = Math.min(Math.max(0, nativeEvent.offsetY), height);
+      const newX = Math.min(Math.max(0, nativeEvent.offsetX), width);
+      const newY = Math.min(Math.max(0, nativeEvent.offsetY), height);
 
-    const [lastX, lastY] = lastPoint;
+      const [lastX, lastY] = lastPoint;
 
-    const deltaX = newX - lastX;
-    const length = Math.abs(deltaX);
-    const sign = Math.sign(deltaX);
+      const deltaX = newX - lastX;
+      const length = Math.abs(deltaX);
+      const sign = Math.sign(deltaX);
 
-    let newPCM = currentPCM.slice();
+      let newPCM = currentPCM.slice();
 
-    if (displayPCM) {
-      const newScreenWave = screenWave.slice();
+      if (displayPCM) {
+        const newScreenWave = screenWave.slice();
 
-      for (let i = 0; i <= length; i++) {
-        let t;
-        if (length === 0) {
-          t = 1;
-        } else {
-          t = i / length;
+        for (let i = 0; i <= length; i++) {
+          let t;
+          if (length === 0) {
+            t = 1;
+          } else {
+            t = i / length;
+          }
+          newScreenWave[lastX + sign * i] = lastY * (1 - t) + newY * t;
         }
-        newScreenWave[lastX + sign * i] = lastY * (1 - t) + newY * t;
-      }
 
-      newPCM = normalizeWave(newScreenWave);
+        newPCM = normalizeWave(newScreenWave);
 
-      const [real, imag] = computeSpectrum(newPCM);
-      
-      setScreenOvertones(fitScreenOvertones(real, imag, width / SCREEN_OVERTONE_WIDTH));
-      setScreenWave(newScreenWave);
+        const [real, imag] = computeSpectrum(newPCM);
+        
+        setScreenOvertones(fitScreenOvertones(real, imag, width / SCREEN_OVERTONE_WIDTH));
+        setScreenWave(newScreenWave);
 
-    } else {
-      const newScreenOvertones = screenOvertones.slice();
+      } else {
+        const newScreenOvertones = screenOvertones.slice();
 
-      for (let i = 0; i <= length; i += SCREEN_OVERTONE_WIDTH) {
-        let t;
-        if (length === 0) {
-          t = 1;
-        } else {
-          t = i / length;
+        for (let i = 0; i <= length; i += SCREEN_OVERTONE_WIDTH) {
+          let t;
+          if (length === 0) {
+            t = 1;
+          } else {
+            t = i / length;
+          }
+          let index = Math.floor((lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
+          newScreenOvertones[index] = lastY * (1 - t) + newY * t;
         }
-        let index = Math.floor((lastX + sign * i) / SCREEN_OVERTONE_WIDTH);
-        newScreenOvertones[index] = lastY * (1 - t) + newY * t;
+
+        const overtones = normalizeOvertones(newScreenOvertones);
+
+        const real = new Float32Array(width).fill(0);
+        const imag = real.slice();
+        for (let i = 0; i < overtones.length; i++) {
+          imag[i + 1] = overtones[i];
+        }
+
+        // computePCM calls the FFT transform which modifies real/imag in place
+        // so this call needs to come after setPitchWaves
+        newPCM = computePCM(real, imag);
+
+        setScreenWave(fitScreenPCM(newPCM));
+        setScreenOvertones(newScreenOvertones);
       }
 
-      const overtones = normalizeOvertones(newScreenOvertones);
-
-      const real = new Float32Array(width).fill(0);
-      const imag = real.slice();
-      for (let i = 0; i < overtones.length; i++) {
-        imag[i + 1] = overtones[i];
-      }
-
-      // computePCM calls the FFT transform which modifies real/imag in place
-      // so this call needs to come after setPitchWaves
-      newPCM = computePCM(real, imag);
-
-      setScreenWave(fitScreenPCM(newPCM));
-      setScreenOvertones(newScreenOvertones);
+      setLastPoint([newX, newY]);
+      setCurrentPCM(newPCM);
+      onPCMChange(newPCM);
     }
-
-    setLastPoint([newX, newY]);
-    setCurrentPCM(newPCM);
-    onPCMChange(newPCM);
   }
 
   function draw(ctx) {
-    
+    ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, width, height);
+
+    if (!booted) {
+      const xOffset = 30;
+      const yOffset = 80;
+
+
+      ctx.fillStyle = "hsl(300 95% 75%)";
+      ctx.font = "48px VT323";
+      ctx.fillText("Warning:", xOffset, yOffset);
+
+      ctx.font = "32px VT323"
+      ctx.fillText("This console has random, glitchy", xOffset, yOffset + 50);
+      ctx.fillText("movements which may trigger epilepsy", xOffset, yOffset + 50 + 40);
+      ctx.fillText("for those with photo-sensitive", xOffset, yOffset + 50 + 2*40);
+      ctx.fillText("epilepsy.", xOffset, yOffset + 50 + 3*40);
+
+      ctx.fillText("Would you like a reduced-motion", xOffset, yOffset + 50 + 5*40);
+      ctx.fillText("version of this app?", xOffset, yOffset + 50 + 6*40);
+
+      ctx.font = "48px VT323";
+      ctx.fillText("Y/N", width/2 - 32, yOffset + 50 + 8*40);
+      return
+    }
+    
     ctx.lineWidth = 2;
 
     if (displayPCM) {
@@ -292,7 +353,12 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz }) {
     for (let i = 0; i < pitchWaves.length; i++) {
       let jitterWave = jitters[i];
 
-      pitchWaves[i] = pitchWave.map((x, j) => x + jitterWave[j]);
+      if (maxHeight === 1 || reducedMotion) { // The zero-wave (silence) or reducedMotion
+        pitchWaves[i] = pitchWave.slice();
+      }
+      else {
+        pitchWaves[i] = pitchWave.map((x, j) => x + jitterWave[j]);
+      }
     }
 
 
