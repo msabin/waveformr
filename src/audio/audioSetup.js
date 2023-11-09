@@ -19,8 +19,10 @@ class ConsoleAudio {
   }
 
   setVol(vol) {
-    this.currentVol = vol;
-    this.vol.gain.setValueAtTime(this.currentVol, this.context.currentTime);;
+    this.currentVol = Math.min(Math.max(vol, 0), 1);
+    this.vol.gain.exponentialRampToValueAtTime(this.currentVol, this.context.currentTime + .25);
+    
+    // setValueAtTime(this.currentVol, this.context.currentTime);;
   }
 
   muteToggle() {
