@@ -76,7 +76,7 @@ export function Console() {
   useEffect(() => {
     if (!booted) {
       midiSetup(handleChangeHz);
-      
+
       return;
     }
 
@@ -145,17 +145,12 @@ export function Console() {
   }
 
 
-  const consoleShadows = {
-    boxShadow: displayPCM
-      ? 'inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), 3px 2px 16px 0px rgb(0 215 255)'
-      : 'inset 4px 5px 0 0 rgb(163 163 163), inset -4px -5px 0 0 rgb(88 88 88), 3px 2px 16px 0px rgb(255 100 247)'
-  }
 
   return (
     <div 
-      id={styles.console} 
+      id={styles.console}
+      className={displayPCM ? styles.pcm : styles.overtones} 
       onMouseDown={handleMouseDown}
-      style={consoleShadows}
     >
       <div id={styles.hz_area}>
         <HzDisplay 

@@ -1,8 +1,9 @@
 import styles from "./index.module.css";
 
+const SEMITONE_FACTOR = 2 ** (1 / 12);
+const MAX_CHARACTER_LIMIT = 8;
+
 export function HzDisplay({ Hz, onChangeHz, booted }) {
-  const SEMITONE_FACTOR = 2 ** (1 / 12);
-  const MAX_CHARACTER_LIMIT = 8;
 
   function handleBlur(e) {
     if (!booted) return;

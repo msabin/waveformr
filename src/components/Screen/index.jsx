@@ -29,13 +29,11 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
           setReducedMotion(true);
           onBoot();
           document.removeEventListener('keydown', handleKeyDown);
-          console.log('yes')
           return;
         case 'n':
           setReducedMotion(false);
           onBoot();
           document.removeEventListener('keydown', handleKeyDown);
-          console.log('no')
           return;
       }
     }
