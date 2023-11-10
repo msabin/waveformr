@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { transform, inverseTransform } from "../../audio/fft";
 import styles from "./index.module.css";
+import { BootOverlay } from "./BootOverlay";
 
 export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted, onBoot }) {
   const NEON_PINK = "rgb(255 16 240)";
@@ -21,50 +22,11 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
 
   const [reducedMotion, setReducedMotion] = useState(null);
 
-  useEffect(() => {
-    function handleKeyDown(e) {
-      
-      switch (e.key) {
-        case 'y': 
-          setReducedMotion(true);
-          onBoot();
-          document.removeEventListener('keydown', handleKeyDown);
-          return;
-        case 'n':
-          setReducedMotion(false);
-          onBoot();
-          document.removeEventListener('keydown', handleKeyDown);
-          return;
-      }
-    }
 
-    function handleMouseDown(e) {
-      if (e.offsetY >= 420 && e.offsetY <= 455) {
-        if (e.offsetX >= 220 && e.offsetX <= 260) {
-          setReducedMotion(true);
-          onBoot();
-          document.removeEventListener('keydown', handleKeyDown);
-          canvasRef.current.removeEventListener('mousedown', handleMouseDown);
-          return;
-        }
-        if (e.offsetX >= 264 && e.offsetX <= 286) {
-          setReducedMotion(false);
-          onBoot();
-          document.removeEventListener('keydown', handleKeyDown);
-          canvasRef.current.removeEventListener('mousedown', handleMouseDown);
-          return;
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    canvasRef.current.addEventListener('mousedown', handleMouseDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      canvasRef.current.removeEventListener('mousedown', handleMouseDown);
-    }
-  },[]);
+  function handleReducedMotion(confirmed) {
+    setReducedMotion(confirmed);
+    onBoot();
+  }
 
   // pcm can be changed in this component by drawing on the Screen (in which
   // case we are in sync with currentPCM and our screenWave and screenOvertones
@@ -183,30 +145,7 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
     ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, width, height);
 
-    if (!booted) {
-      const xOffset = 30;
-      const yOffset = 80;
-
-
-      ctx.fillStyle = "hsl(177deg, 50%, 60%)";
-      ctx.font = "48px VT323";
-      ctx.fillText("Warning:", xOffset, yOffset);
-
-      ctx.font = "32px VT323"
-      ctx.fillText("This console has random, glitchy", xOffset, yOffset + 50);
-      ctx.fillText("movements which may trigger epilepsy", xOffset, yOffset + 50 + 40);
-      ctx.fillText("for those with photo-sensitive", xOffset, yOffset + 50 + 2*40);
-      ctx.fillText("epilepsy.", xOffset, yOffset + 50 + 3*40);
-
-      ctx.fillText("Would you like a reduced-motion", xOffset, yOffset + 50 + 5*40);
-      ctx.fillText("version of this app?", xOffset, yOffset + 50 + 6*40);
-
-      ctx.font = "48px VT323";
-      ctx.fillText("Y/N", width/2 - 32, yOffset + 50 + 8*40);
-      return
-    }
-    
-    ctx.lineWidth = 2;
+    if (!booted) return;
 
     if (displayPCM) {
       let frame = Math.floor(Math.random() * JITTER_FRAMES);
@@ -425,16 +364,24 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
   }
 
   return (
-    <canvas
-      id={styles.screen}
-      ref={canvasRef}
-      width={width}
-      height={height}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseUp}
-      onMouseOver={handleMouseOver}
-    />
+    <div id={styles.container}>
+      <canvas
+        id={styles.screen}
+        ref={canvasRef}
+        width={width}
+        height={height}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseUp}
+        onMouseOver={handleMouseOver}
+      />
+
+      {booted ? 
+        null :
+        <BootOverlay onReducedMotion={handleReducedMotion}/>
+      }
+      
+    </div>
   );
 }

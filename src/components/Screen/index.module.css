@@ -1,4 +1,8 @@
-#screen {
+#container{
+  position: relative;
+}
+
+#container #screen {
   border-style: inset;
   border-width: 8px;
   border-color: #9a9999;
