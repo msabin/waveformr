@@ -2,6 +2,15 @@
   position: relative;
 }
 
+#container.pcm {
+  cursor: url('../../assets/pencilCursorBlue.png') 0 32, auto;
+}
+
+#container.overtones {
+  cursor: url('../../assets/pencilCursorPink.png') 0 32, auto;
+}
+
+
 #container #screen {
   border-style: inset;
   border-width: 8px;

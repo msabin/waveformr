@@ -364,7 +364,10 @@ export function Screen({ width, height, pcm, onPCMChange, displayPCM, Hz, booted
   }
 
   return (
-    <div id={styles.container}>
+    <div 
+      id={styles.container} 
+      className={displayPCM ? styles.pcm : styles.overtones} 
+    >
       <canvas
         id={styles.screen}
         ref={canvasRef}
