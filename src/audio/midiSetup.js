@@ -53,11 +53,12 @@ function onMIDIMessage(event) {
     str += `0x${character.toString(16)} `;
   }
   console.log(str);
-  console.log(event.data[1]);
+  console.log('MIDI note:', event.data[1]);
 
   if (event.data[0] === MIDI_PRESS) {
     let distFromA4 = event.data[1] - MIDI_A4;
     let Hz = 2 ** ((1 / 12) * distFromA4) * A4;
     changeConsoleHz(Hz);
+    console.log('Changing Hz to', Hz);
   }
 }

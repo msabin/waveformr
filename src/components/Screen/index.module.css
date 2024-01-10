@@ -3,11 +3,11 @@
 }
 
 #container.pcm {
-  cursor: url('../../assets/pencilCursorBlue.png') 0 32, auto;
+  cursor: url('../../assets/pencilCursorBlue.png') 0 31, auto;
 }
 
 #container.overtones {
-  cursor: url('../../assets/pencilCursorPink.png') 0 32, auto;
+  cursor: url('../../assets/pencilCursorPink.png') 0 31, auto;
 }
 
 
