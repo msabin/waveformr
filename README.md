@@ -1,4 +1,4 @@
-# waveformr ([app](https://msabin.github.io/waveformr/))
+# waveformr - ([app](https://msabin.github.io/waveformr/))
 
 <img src="/screencaps/drawing-demo.gif" width="500">
 
