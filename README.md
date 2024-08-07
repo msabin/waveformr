@@ -4,7 +4,7 @@
 
 waveformr is a GUI for visually sculpting your own fundamental waveform!  
 
-**Play with the app [here](https://msabin.github.io/waveformr/) (plug and play with MIDI keyboard)!!**
+**Play with the app [here](https://msabin.github.io/waveformr/)!!**
 
 Draw a waveform in either the time domain or in the frequency domain and use waveformr as an Oscillator to play melodies with a MIDI controller, sound design the exact tone you're looking for, or experientially learn how sound in the time domain relates to sound in the frequency domain.
 
